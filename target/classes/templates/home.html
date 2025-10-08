@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard Insurance - Dashboard</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>SecureGuard Insurance</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="home.html" class="nav-link active">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="user.html" class="nav-link">Profile</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>Welcome to Your Dashboard</h1>
+                <p>Manage your insurance policies and track your coverage</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>My Policies</h3>
+                        <span class="card-count">3</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="policy-item">
+                            <div class="policy-info">
+                                <h4>Auto Insurance</h4>
+                                <p>Policy #: A123456789</p>
+                            </div>
+                            <div class="policy-status active">Active</div>
+                        </div>
+                        <div class="policy-item">
+                            <div class="policy-info">
+                                <h4>Home Insurance</h4>
+                                <p>Policy #: H987654321</p>
+                            </div>
+                            <div class="policy-status active">Active</div>
+                        </div>
+                        <div class="policy-item">
+                            <div class="policy-info">
+                                <h4>Life Insurance</h4>
+                                <p>Policy #: L456789123</p>
+                            </div>
+                            <div class="policy-status pending">Pending</div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-outline">View All Policies</a>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Recent Claims</h3>
+                        <span class="card-count">2</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="claim-item">
+                            <div class="claim-info">
+                                <h4>Auto Accident</h4>
+                                <p>Claim #: C789123456</p>
+                            </div>
+                            <div class="claim-status processing">Processing</div>
+                        </div>
+                        <div class="claim-item">
+                            <div class="claim-info">
+                                <h4>Home Damage</h4>
+                                <p>Claim #: C321654987</p>
+                            </div>
+                            <div class="claim-status approved">Approved</div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-outline">View All Claims</a>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="quick-actions">
+                            <a href="#" class="action-btn">
+                                <span class="action-icon">📋</span>
+                                <span>File a Claim</span>
+                            </a>
+                            <a href="#" class="action-btn">
+                                <span class="action-icon">💳</span>
+                                <span>Make Payment</span>
+                            </a>
+                            <a href="#" class="action-btn">
+                                <span class="action-icon">📄</span>
+                                <span>Download Documents</span>
+                            </a>
+                            <a href="#" class="action-btn">
+                                <span class="action-icon">📞</span>
+                                <span>Contact Support</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Upcoming Payments</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="payment-item">
+                            <div class="payment-info">
+                                <h4>Auto Insurance</h4>
+                                <p>Due: Dec 15, 2024</p>
+                            </div>
+                            <div class="payment-amount">$125.00</div>
+                        </div>
+                        <div class="payment-item">
+                            <div class="payment-info">
+                                <h4>Home Insurance</h4>
+                                <p>Due: Dec 20, 2024</p>
+                            </div>
+                            <div class="payment-amount">$89.50</div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">Pay Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">🛡️</div>
+                    <div class="stat-info">
+                        <h3>Total Coverage</h3>
+                        <p class="stat-value">$2,500,000</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <h3>Monthly Premium</h3>
+                        <p class="stat-value">$214.50</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3>Claims This Year</h3>
+                        <p class="stat-value">2</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-info">
+                        <h3>Customer Rating</h3>
+                        <p class="stat-value">4.8/5</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SecureGuard Insurance</h3>
+                    <p>Protecting what matters most to you since 2020.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="home.html">Dashboard</a></li>
+                        <li><a href="user.html">Profile</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@secureguard.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SecureGuard Insurance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }));
+    </script>
+</body>
+</html>

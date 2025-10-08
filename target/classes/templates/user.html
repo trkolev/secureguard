@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard Insurance - User Profile</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>SecureGuard Insurance</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="home.html" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="user.html" class="nav-link active">Profile</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="profile-header">
+                <h1>User Profile</h1>
+                <p>Manage your account information and preferences</p>
+            </div>
+
+            <div class="profile-layout">
+                <div class="profile-sidebar">
+                    <div class="profile-card">
+                        <div class="profile-avatar">
+                            <div class="avatar-placeholder">
+                                <span>JD</span>
+                            </div>
+                        </div>
+                        <div class="profile-info">
+                            <h3>John Doe</h3>
+                            <p>john.doe@email.com</p>
+                            <p>Member since 2020</p>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="btn btn-outline">Edit Profile</button>
+                        </div>
+                    </div>
+
+                    <div class="profile-menu">
+                        <a href="#personal" class="menu-item active">Personal Info</a>
+                        <a href="#security" class="menu-item">Security</a>
+                        <a href="#notifications" class="menu-item">Notifications</a>
+                        <a href="#preferences" class="menu-item">Preferences</a>
+                    </div>
+                </div>
+
+                <div class="profile-content">
+                    <div class="profile-section" id="personal">
+                        <div class="section-header">
+                            <h2>Personal Information</h2>
+                            <button class="btn btn-outline">Edit</button>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" value="John" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" value="Doe" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" value="john.doe@email.com" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" value="(555) 123-4567" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" id="address" value="123 Main St, City, State 12345" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="dateOfBirth">Date of Birth</label>
+                                <input type="date" id="dateOfBirth" value="1985-06-15" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section" id="security">
+                        <div class="section-header">
+                            <h2>Security Settings</h2>
+                        </div>
+                        <div class="security-items">
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h4>Password</h4>
+                                    <p>Last changed 3 months ago</p>
+                                </div>
+                                <button class="btn btn-outline">Change Password</button>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h4>Two-Factor Authentication</h4>
+                                    <p>Add an extra layer of security</p>
+                                </div>
+                                <button class="btn btn-outline">Enable 2FA</button>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h4>Login Activity</h4>
+                                    <p>View recent login attempts</p>
+                                </div>
+                                <button class="btn btn-outline">View Activity</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section" id="notifications">
+                        <div class="section-header">
+                            <h2>Notification Preferences</h2>
+                        </div>
+                        <div class="notification-settings">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Email Notifications</h4>
+                                    <p>Receive updates via email</p>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>SMS Notifications</h4>
+                                    <p>Receive updates via text message</p>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Policy Reminders</h4>
+                                    <p>Get reminded about policy renewals</p>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Payment Reminders</h4>
+                                    <p>Get reminded about upcoming payments</p>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section" id="preferences">
+                        <div class="section-header">
+                            <h2>Account Preferences</h2>
+                        </div>
+                        <div class="preference-settings">
+                            <div class="form-group">
+                                <label for="language">Language</label>
+                                <select id="language">
+                                    <option value="en" selected>English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="timezone">Timezone</label>
+                                <select id="timezone">
+                                    <option value="EST" selected>Eastern Time</option>
+                                    <option value="CST">Central Time</option>
+                                    <option value="MST">Mountain Time</option>
+                                    <option value="PST">Pacific Time</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="currency">Currency</label>
+                                <select id="currency">
+                                    <option value="USD" selected>USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="section-actions">
+                            <button class="btn btn-primary">Save Preferences</button>
+                            <button class="btn btn-outline">Reset to Default</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SecureGuard Insurance</h3>
+                    <p>Protecting what matters most to you since 2020.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="home.html">Dashboard</a></li>
+                        <li><a href="user.html">Profile</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@secureguard.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SecureGuard Insurance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }));
+
+        // Profile menu navigation
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
