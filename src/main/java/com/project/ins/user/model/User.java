@@ -46,6 +46,9 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private boolean isActive;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner")
     private List<Wallet> wallets = new ArrayList<>();
 }

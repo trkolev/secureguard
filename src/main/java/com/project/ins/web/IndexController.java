@@ -1,6 +1,7 @@
 package com.project.ins.web;
 
 import com.project.ins.user.service.UserService;
+import com.project.ins.web.dto.LoginRequest;
 import com.project.ins.web.dto.RegisterRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -24,8 +25,13 @@ public class IndexController {
     }
 
     @GetMapping("/login")
-    public String login() {
-        return "login";
+    public ModelAndView login() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login");
+        modelAndView.addObject("loginRequest", new LoginRequest());
+
+        return modelAndView;
     }
 
     @GetMapping("/register")
@@ -53,6 +59,7 @@ public class IndexController {
 
         return "redirect:/login";
     }
+
 
     @GetMapping("/about")
     public String about() {
