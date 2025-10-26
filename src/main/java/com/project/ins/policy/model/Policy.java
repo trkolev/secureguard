@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
@@ -30,7 +31,7 @@ public class Policy {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private InsuredObject insuredObject;
+    private PolicyName policyName;
 
     @Column(nullable = false)
     private LocalDate startDate;
@@ -39,8 +40,24 @@ public class Policy {
     private LocalDate endDate;
 
     @Column(nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private BigDecimal premium;
+    private LocalDateTime updatedAt;
+
+    private String coverageDescription;
+
+    private LocalDate cancellationDate;
+
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal premiumAmount;
+
+
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal coverageAmount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PolicyStatus status;
+
 }

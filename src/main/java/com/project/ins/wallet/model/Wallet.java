@@ -21,7 +21,7 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
+    @OneToOne
     private User owner;
 
     @Column(nullable = false)

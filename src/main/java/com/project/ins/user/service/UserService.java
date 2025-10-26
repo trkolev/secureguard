@@ -4,6 +4,9 @@ import com.project.ins.security.UserData;
 import com.project.ins.user.model.User;
 import com.project.ins.user.model.UserRole;
 import com.project.ins.user.repository.UserRepository;
+import com.project.ins.wallet.model.Wallet;
+import com.project.ins.wallet.repository.WalletRepository;
+import com.project.ins.wallet.service.WalletService;
 import com.project.ins.web.dto.RegisterRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +25,15 @@ import java.util.UUID;
 @Service
 public class UserService implements UserDetailsService {
 
+    private final UserRepository userRepository;
+    private final PasswordEncoder PasswordEncoder;
+    private final WalletService walletService;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, WalletRepository walletRepository, WalletService walletService) {
+        this.userRepository = userRepository;
+        PasswordEncoder = passwordEncoder;
+        this.walletService = walletService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -30,13 +44,6 @@ public class UserService implements UserDetailsService {
         return new UserData(user.getId(), user.getUsername(), user.getPassword(), user.getRole(), user.isActive());
     }
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder PasswordEncoder;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        PasswordEncoder = passwordEncoder;
-    }
 
     public void saveUser(RegisterRequest registerRequest) {
 
@@ -55,9 +62,12 @@ public class UserService implements UserDetailsService {
                 .role(UserRole.USER)
                 .createdAt(LocalDateTime.now())
                 .isActive(true)
+                .wallet(walletService.createDefaultWallet())
                 .build();
 
+        user.getWallet().setOwner(user);
         userRepository.save(user);
+        log.info("User {} successfully created", user.getUsername());
     }
 
 
@@ -69,5 +79,10 @@ public class UserService implements UserDetailsService {
 
         return new RegisterRequest(user.getUsername(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getEmail(), "", "");
 
+    }
+
+
+    public void save(User user) {
+        userRepository.save(user);
     }
 }

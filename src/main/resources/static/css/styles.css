@@ -624,6 +624,18 @@ body {
     color: #856404;
 }
 
+.policy-status.inactive,
+.claim-status.processing {
+    background: #9d9d9d;
+    color: #2f2f2f;
+}
+
+.policy-status.canceled,
+.claim-status.processing {
+    background: #ffcdcd;
+    color: #f30519;
+}
+
 .payment-amount {
     font-weight: 700;
     color: #667eea;

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -25,11 +26,14 @@ public class IndexController {
     }
 
     @GetMapping("/login")
-    public ModelAndView login() {
+    public ModelAndView login(@RequestParam(name = "error", required = false) String errorMessage) {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
         modelAndView.addObject("loginRequest", new LoginRequest());
+        if (errorMessage != null) {
+            modelAndView.addObject("errorMessage", "Incorrect username or password");
+        }
 
         return modelAndView;
     }
