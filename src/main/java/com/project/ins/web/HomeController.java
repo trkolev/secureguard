@@ -3,8 +3,11 @@ package com.project.ins.web;
 import com.project.ins.policy.model.Policy;
 import com.project.ins.policy.service.PolicyService;
 import com.project.ins.security.UserData;
+import com.project.ins.transaction.model.Transaction;
+import com.project.ins.transaction.service.TransactionService;
 import com.project.ins.user.model.User;
 import com.project.ins.user.service.UserService;
+import com.project.ins.wallet.model.Wallet;
 import com.project.ins.web.dto.PasswordChangeRequest;
 import com.project.ins.web.dto.RegisterRequest;
 import jakarta.validation.Valid;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -27,11 +31,13 @@ public class HomeController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final PolicyService policyService;
+    private final TransactionService transactionService;
 
-    public HomeController(UserService userService, PasswordEncoder passwordEncoder, PolicyService policyService) {
+    public HomeController(UserService userService, PasswordEncoder passwordEncoder, PolicyService policyService, TransactionService transactionService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.policyService = policyService;
+        this.transactionService = transactionService;
     }
 
     @GetMapping("/home")
@@ -40,11 +46,15 @@ public class HomeController {
         User user = userService.findById(userData.getId());
         List<Policy> userPolicy = policyService.getAllByOwnerIdLimited(userData.getId());
         int userPolicySize = policyService.getAllByUserId(userData.getId()).size();
+        Wallet wallet = user.getWallet();
+        List<Transaction> transactions = transactionService.findAllByUserIdLimit(userData.getId());
 
         ModelAndView modelAndView = new ModelAndView("home");
         modelAndView.addObject("user", user);
         modelAndView.addObject("userPolicy", userPolicy);
         modelAndView.addObject("userPolicySize", userPolicySize);
+        modelAndView.addObject("wallet", wallet);
+        modelAndView.addObject("transactions", transactions);
 
         return modelAndView;
     }
@@ -56,15 +66,14 @@ public class HomeController {
 
         ModelAndView modelAndView = new ModelAndView("profile");
         RegisterRequest registerRequest = userService.mapUserToRegisterRequest(user);
-//        TODO:  Map User to registerRequest
         modelAndView.addObject("user", registerRequest);
         modelAndView.addObject("passwordChange", new PasswordChangeRequest());
 
         return modelAndView;
     }
 
-    @PostMapping("/profile/change-password")
-    public ModelAndView changePassword(@Valid @ModelAttribute("passwordChange") PasswordChangeRequest passwordChange, 
+    @PatchMapping("/profile/change-password")
+    public ModelAndView changePassword(@Valid PasswordChangeRequest passwordChange,
                                        BindingResult bindingResult,
                                        @AuthenticationPrincipal UserData userData,
                                        RedirectAttributes redirectAttributes) {

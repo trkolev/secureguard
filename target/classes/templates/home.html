@@ -59,7 +59,7 @@
                         </div>
                     </div>
                     <div class="card-footer" style="display: flex; gap: 1rem; justify-content: space-between;">
-                        <a href="#" class="btn btn-outline" style="flex: 1;">View All Policies</a>
+                        <a th:href="@{/policy-view}" class="btn btn-outline" style="flex: 1;">View All Policies</a>
                         <a th:href="@{/policy}" class="btn btn-outline" style="flex: 1;">Create New Policy</a>
                     </div>
                 </div>
@@ -152,30 +152,26 @@
                             <p style="color: #333; font-size: 2rem; font-weight: 700;" th:text="${wallet != null ? wallet.currency + ' ' + wallet.balance : 'USD 0.00'}">USD 0.00</p>
                         </div>
                         <h4 style="color: #333; font-size: 1rem; margin-bottom: 0.75rem;">Recent Transactions</h4>
-                        <div class="payment-item">
+                        <div class="payment-item" th:each="transaction : ${transactions}">
                             <div class="payment-info">
-                                <h4>Premium Payment</h4>
-                                <p>Jan 10, 2025</p>
+                                <h4 th:text="${transaction.getDescription()}">Premium Payment</h4>
+                                <p th:text="${transaction.createdOn}">Jan 10, 2025</p>
                             </div>
-                            <div class="payment-amount" style="color: #dc3545;">-$214.50</div>
-                        </div>
-                        <div class="payment-item">
-                            <div class="payment-info">
-                                <h4>Wallet Top-up</h4>
-                                <p>Jan 5, 2025</p>
-                            </div>
-                            <div class="payment-amount" style="color: #28a745;">+$500.00</div>
-                        </div>
-                        <div class="payment-item">
-                            <div class="payment-info">
-                                <h4>Claim Refund</h4>
-                                <p>Dec 28, 2024</p>
-                            </div>
-                            <div class="payment-amount" style="color: #28a745;">+$1,250.00</div>
+                            <div class="payment-amount" th:if="${transaction.type == T(com.project.ins.transaction.model.TransactionType).WITHDRAW}" style="color: #dc3545;" th:text="${transaction.getAmount()}">-$214.50</div>
+                            <div class="payment-amount" th:if="${transaction.type == T(com.project.ins.transaction.model.TransactionType).DEPOSIT}" style="color: #28a745;" th:text="${transaction.getAmount()}">+$500.00</div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <a href="#" class="btn btn-outline">View All Transactions</a>
+                    <div class="card-footer" style="display: flex; gap: 1rem; justify-content: space-between;">
+                        <form th:action="@{/transactions}" th:method="GET" style="flex: 1;">
+                            <button type="submit" class="btn btn-outline" style="width: 100%; padding: 12px 22px; box-sizing: border-box;">
+                                All Transactions
+                            </button>
+                        </form>
+                        <form th:action="@{'/wallets/'+ ${wallet.getId()} + '/balance'}" th:method="PATCH" style="flex: 1;">
+                            <button type="submit" class="btn btn-outline" style="width: 100%; padding: 12px 22px; box-sizing: border-box;">
+                                Add 200 EUR
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

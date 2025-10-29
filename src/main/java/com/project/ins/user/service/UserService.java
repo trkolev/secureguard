@@ -4,7 +4,6 @@ import com.project.ins.security.UserData;
 import com.project.ins.user.model.User;
 import com.project.ins.user.model.UserRole;
 import com.project.ins.user.repository.UserRepository;
-import com.project.ins.wallet.model.Wallet;
 import com.project.ins.wallet.repository.WalletRepository;
 import com.project.ins.wallet.service.WalletService;
 import com.project.ins.web.dto.RegisterRequest;
@@ -16,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
