@@ -1,10 +1,10 @@
 package com.project.ins.wallet.service;
 
+import com.project.ins.transaction.model.Transaction;
 import com.project.ins.transaction.service.TransactionService;
 import com.project.ins.user.model.User;
 import com.project.ins.wallet.model.Wallet;
 import com.project.ins.wallet.repository.WalletRepository;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Currency;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -44,16 +43,19 @@ public class WalletService {
         wallet.setBalance(wallet.getBalance().add(BigDecimal.valueOf(200.00)));
         walletRepository.save(wallet);
         transactionService.createTopTransaction(user, wallet.getBalance());
-        log.info("Wallet Top Up Success");
+        log.info("Wallet Top Up Successfully");
     }
 
-    public void reduceAmount(BigDecimal premiumAmount, User user) {
+    public Transaction reduceAmount(BigDecimal premiumAmount, User user) {
 
         Wallet wallet = walletRepository.findByOwnerId(user.getId());
         if (wallet.getBalance().compareTo(premiumAmount) >= 0) {
-            transactionService.createWithdrawalTransaction(user, wallet.getBalance());
+            wallet.setBalance(wallet.getBalance().subtract(premiumAmount));
+            walletRepository.save(wallet);
+            return transactionService.createWithdrawalTransaction(user, wallet.getBalance(), premiumAmount);
         }else{
-            transactionService.createFailTransaction(user, wallet.getBalance(), "Balance not enough");
+            return transactionService.createFailTransaction(user, wallet.getBalance(), premiumAmount, "insufficient balance");
         }
+
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.UUID;
 
@@ -23,10 +24,12 @@ public class WalletController {
     }
 
     @PatchMapping("/wallets/{id}/balance")
-    public String addBalance(@PathVariable UUID id, @AuthenticationPrincipal UserData userData) {
+    public String addBalance(@PathVariable UUID id, @AuthenticationPrincipal UserData userData, RedirectAttributes redirectAttributes) {
 
         User user = userService.findById(userData.getId());
         walletService.topUp(user);
+
+        redirectAttributes.addFlashAttribute("successMessage", "You successfully added 200 EUR to your balance!");
 
         return "redirect:/home";
     }

@@ -38,6 +38,9 @@
             <div class="dashboard-header">
                 <h1>Welcome to Your Dashboard</h1>
                 <p>Manage your insurance policies and track your coverage</p>
+                <div th:if="${successMessage}" class="success-banner" style="background: rgba(40, 167, 69, 0.1); border: 1px solid #28a745; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="color: #28a745; font-size: 0.9rem; margin: 0; font-weight: 600;" th:text="${successMessage}">Success!</p>
+                </div>
             </div>
 
             <div class="dashboard-grid">
@@ -67,26 +70,20 @@
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3>Recent Claims</h3>
-                        <span class="card-count">2</span>
+                        <span class="card-count" th:text="${userClaimsCount}">0</span>
                     </div>
                     <div class="card-content">
-                        <div class="claim-item">
+                        <div class="claim-item" th:each="claim : ${claims}">
                             <div class="claim-info">
-                                <h4>Auto Accident</h4>
+                                <h4 th:text="*{claim.getStatus()}">Auto Accident</h4>
                                 <p>Claim #: C789123456</p>
                             </div>
-                            <div class="claim-status processing">Processing</div>
-                        </div>
-                        <div class="claim-item">
-                            <div class="claim-info">
-                                <h4>Home Damage</h4>
-                                <p>Claim #: C321654987</p>
-                            </div>
-                            <div class="claim-status approved">Approved</div>
+                            <div th:classappend="'claim-status ' + ${claim.status.name().toLowerCase()}" th:text="${claim.status}">Processing</div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <a href="#" class="btn btn-outline">View All Claims</a>
+                    <div class="card-footer" style="display: flex; gap: 1rem; justify-content: space-between;">
+                        <a th:href="@{/claims/all}" class="btn btn-outline">View All Claims</a>
+                        <a th:href="@{/claims}" class="btn btn-outline">Submit a Claim</a>
                     </div>
                 </div>
 
@@ -181,28 +178,21 @@
                     <div class="stat-icon">🛡️</div>
                     <div class="stat-info">
                         <h3>Total Coverage</h3>
-                        <p class="stat-value">$2,500,000</p>
+                        <p class="stat-value" th:text="${totalCoverage}">$2,500,000</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">💰</div>
                     <div class="stat-info">
-                        <h3>Monthly Premium</h3>
-                        <p class="stat-value">$214.50</p>
+                        <h3>Total Premium</h3>
+                        <p class="stat-value" th:text="${totalPremium}">$214.50</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
                     <div class="stat-info">
                         <h3>Claims This Year</h3>
-                        <p class="stat-value">2</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⭐</div>
-                    <div class="stat-info">
-                        <h3>Customer Rating</h3>
-                        <p class="stat-value">4.8/5</p>
+                        <p class="stat-value" th:text="${claimsThisYear}">2</p>
                     </div>
                 </div>
             </div>
@@ -245,6 +235,16 @@
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
         });
+
+        // Auto-hide success message after 5 seconds
+        const successBanner = document.querySelector('.success-banner');
+        if (successBanner) {
+            setTimeout(function() {
+                successBanner.style.transition = 'opacity 0.5s';
+                successBanner.style.opacity = '0';
+                setTimeout(() => successBanner.remove(), 500);
+            }, 5000);
+        }
 
         // Close mobile menu when clicking on a link
         document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {

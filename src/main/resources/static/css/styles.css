@@ -613,25 +613,26 @@ body {
 }
 
 .policy-status.active,
+.claim-status.registered,
 .claim-status.approved {
     background: #d4edda;
     color: #155724;
 }
 
 .policy-status.pending,
-.claim-status.processing {
+.claim-status.reviewing {
     background: #fff3cd;
     color: #856404;
 }
 
-.policy-status.inactive,
-.claim-status.processing {
+.policy-status.inactive{
     background: #9d9d9d;
     color: #2f2f2f;
 }
 
 .policy-status.canceled,
-.claim-status.processing {
+.claim-status.declined
+ {
     background: #ffcdcd;
     color: #f30519;
 }

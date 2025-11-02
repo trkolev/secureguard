@@ -1,4 +1,4 @@
-package com.project.ins.policyCounter.model;
+package com.project.ins.policynumbergenerator.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PolicyNumberCounter {
+public class PolicyNumberGenerator {
 
     @Id
     private String policy;

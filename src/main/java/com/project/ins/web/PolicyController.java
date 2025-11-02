@@ -3,6 +3,8 @@ package com.project.ins.web;
 import com.project.ins.policy.model.Policy;
 import com.project.ins.policy.service.PolicyService;
 import com.project.ins.security.UserData;
+import com.project.ins.transaction.model.Transaction;
+import com.project.ins.transaction.model.TransactionStatus;
 import com.project.ins.user.model.User;
 import com.project.ins.user.service.UserService;
 import com.project.ins.wallet.service.WalletService;
@@ -57,8 +59,16 @@ public class PolicyController {
 
         User user = userService.findById(userData.getId());
         policyService.createPolicy(policyRequest, userData, user);
-        walletService.reduceAmount(policyRequest.getPremiumAmount(), user);
-        redirectAttributes.addFlashAttribute("successMessage", "Policy created successfully");
+        Transaction transaction = walletService.reduceAmount(policyRequest.getPremiumAmount(), user);
+
+        if (transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
+
+            redirectAttributes.addFlashAttribute("successMessage", "Policy created successfully");
+
+        }else{
+
+            redirectAttributes.addFlashAttribute("failMessage", "Policy creation failed");
+        }
 
         return new ModelAndView("redirect:/policy");
     }
@@ -74,9 +84,10 @@ public class PolicyController {
     }
 
     @PatchMapping("policy/{id}/cancel")
-    public String cancelPolicy(@PathVariable("id") UUID id) {
+    public String cancelPolicy(@PathVariable("id") UUID id, RedirectAttributes redirectAttributes) {
 
        policyService.cancelPolicy(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Policy cancelled successfully");
 
        return "redirect:/policy-view";
     }

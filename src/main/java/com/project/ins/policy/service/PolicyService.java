@@ -4,8 +4,8 @@ import com.project.ins.exception.PolicyException;
 import com.project.ins.policy.model.Policy;
 import com.project.ins.policy.model.PolicyStatus;
 import com.project.ins.policy.repository.PolicyRepository;
-import com.project.ins.policyCounter.repository.PolicyNumberCounterRepository;
-import com.project.ins.policyCounter.service.PolicyNumberCounterService;
+import com.project.ins.policynumbergenerator.repository.PolicyNumberGeneratorRepository;
+import com.project.ins.policynumbergenerator.service.PolicyNumberGeneratorService;
 import com.project.ins.security.UserData;
 import com.project.ins.user.model.User;
 import com.project.ins.user.service.UserService;
@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -26,31 +27,36 @@ public class PolicyService {
 
     @Autowired
     private final PolicyRepository policyRepository;
-    private final PolicyNumberCounterService policyNumberCounterService;
+    private final PolicyNumberGeneratorService policyNumberGeneratorService;
 
-    public PolicyService(PolicyRepository policyRepository, PolicyNumberCounterRepository policyNumberCounterRepository, PolicyNumberCounterService policyNumberCounterService, UserService userService) {
+    public PolicyService(PolicyRepository policyRepository, PolicyNumberGeneratorRepository policyNumberGeneratorRepository, PolicyNumberGeneratorService policyNumberGeneratorService, UserService userService) {
         this.policyRepository = policyRepository;
-        this.policyNumberCounterService = policyNumberCounterService;
+        this.policyNumberGeneratorService = policyNumberGeneratorService;
     }
 
 
     public void createPolicy(@Valid PolicyRequest policyRequest, UserData userData, User user) {
 
-        Policy policy = Policy.builder()
-                .policyNumber(policyNumberCounterService.generateNextPolicyNumber())
-                .owner(user)
-                .policyName(policyRequest.getPolicyName())
-                .startDate(policyRequest.getStartDate())
-                .endDate(policyRequest.getEndDate())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .coverageDescription(policyRequest.getCoverageDescription())
-                .premiumAmount(policyRequest.getPremiumAmount())
-                .coverageAmount(policyRequest.getCoverageAmount())
-                .status(PolicyStatus.ACTIVE)
-                .build();
+        if(user.getWallet().getBalance().compareTo(policyRequest.getPremiumAmount()) >= 0) {
 
-        policyRepository.save(policy);
+            Policy policy = Policy.builder()
+                    .policyNumber(policyNumberGeneratorService.generateNextPolicyNumber())
+                    .owner(user)
+                    .policyName(policyRequest.getPolicyName())
+                    .startDate(policyRequest.getStartDate())
+                    .endDate(policyRequest.getEndDate())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .coverageDescription(policyRequest.getCoverageDescription())
+                    .premiumAmount(policyRequest.getPremiumAmount())
+                    .coverageAmount(policyRequest.getCoverageAmount())
+                    .status(PolicyStatus.ACTIVE)
+                    .build();
+
+            policyRepository.save(policy);
+        }else  {
+            throw new PolicyException("Insufficient wallet balance");
+        }
     }
 
     public List<Policy> getAllByUserId(UUID id) {
@@ -77,6 +83,22 @@ public class PolicyService {
         policy.get().setStatus(PolicyStatus.CANCELLED);
         policy.get().setCancellationDate(LocalDate.now());
         policyRepository.save(policy.get());
+
+    }
+
+    public BigDecimal findTotalCoverage(UUID id) {
+
+        return getAllByUserId(id).stream()
+                .map(Policy::getCoverageAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    }
+
+    public BigDecimal findTotalPremium(UUID id) {
+
+        return getAllByUserId(id).stream()
+                .map(Policy::getPremiumAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     }
 }
