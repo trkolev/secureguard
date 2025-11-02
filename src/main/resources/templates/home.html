@@ -118,23 +118,16 @@
                         <h3>Upcoming Payments</h3>
                     </div>
                     <div class="card-content">
-                        <div class="payment-item">
+                        <div class="payment-item" th:each="payment : ${pendingPayments}">
                             <div class="payment-info">
-                                <h4>Auto Insurance</h4>
-                                <p>Due: Dec 15, 2024</p>
+                                <h4 th:text="*{payment.getStatus().status}">Auto Insurance</h4>
+                                <p th:text="'Due ' + *{payment.getUpdatedDate().plusDays(15)}">Due: Dec 15, 2024</p>
                             </div>
-                            <div class="payment-amount">$125.00</div>
-                        </div>
-                        <div class="payment-item">
-                            <div class="payment-info">
-                                <h4>Home Insurance</h4>
-                                <p>Due: Dec 20, 2024</p>
-                            </div>
-                            <div class="payment-amount">$89.50</div>
+                            <div class="payment-amount" th:text="*{payment.getAmount()}">$125.00</div>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">Pay Now</a>
+                        <a href="#" class="btn btn-primary">View All</a>
                     </div>
                 </div>
 

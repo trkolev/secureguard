@@ -9,6 +9,7 @@ import com.project.ins.claim.repository.ClaimRepository;
 import com.project.ins.user.model.User;
 import com.project.ins.web.dto.ClaimRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ClaimService {
 
@@ -60,7 +62,8 @@ public class ClaimService {
     public List<Claim> findAllByOwnerId(UUID id) {
         List<Claim> allByOwnerId = claimRepository.findAllByOwner_Id(id);
         if (allByOwnerId.isEmpty()) {
-            throw   new RuntimeException("This user doesn't have any claims");
+//            throw   new RuntimeException("This user doesn't have any claims");
+            log.info("Claim findAllByOwnerId returned empty list");
         }
         return allByOwnerId;
     }
@@ -85,5 +88,11 @@ public class ClaimService {
         List<Claim> claimList = findAllByOwnerId(id).stream().filter(claim -> claim.getCreatedDate().getYear() == LocalDateTime.now().getYear()).toList();
 
         return claimList.size();
+    }
+
+    public List<Claim> upcomingPayments(UUID id) {
+
+        return findAllByOwnerId(id).stream().sorted(Comparator.comparing(Claim::getCreatedDate)).filter(claim -> claim.getStatus() == ClaimStatus.APPROVED).toList();
+
     }
 }

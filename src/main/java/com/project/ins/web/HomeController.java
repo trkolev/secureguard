@@ -55,6 +55,7 @@ public class HomeController {
         BigDecimal totalCoverage = policyService.findTotalCoverage(userData.getId());
         BigDecimal totalPremium = policyService.findTotalPremium(userData.getId());
         int claimsThisYear = claimService.findClaimsThisYear(userData.getId());
+        List<Claim> pendingPayments = claimService.upcomingPayments(userData.getId());
 
         ModelAndView modelAndView = new ModelAndView("home");
         modelAndView.addObject("user", user);
@@ -67,6 +68,7 @@ public class HomeController {
         modelAndView.addObject("totalCoverage", totalCoverage);
         modelAndView.addObject("totalPremium", totalPremium);
         modelAndView.addObject("claimsThisYear", claimsThisYear);
+        modelAndView.addObject("pendingPayments", pendingPayments);
 
         return modelAndView;
     }
