@@ -1,11 +1,10 @@
 package com.project.ins.claim.service;
 
-import com.project.ins.calimnumbergenerator.model.ClaimNumberGenerator;
-import com.project.ins.calimnumbergenerator.service.ClaimNumberGeneratorService;
 import com.project.ins.claim.model.Claim;
 import com.project.ins.claim.model.ClaimStatus;
 import com.project.ins.claim.model.ClaimType;
 import com.project.ins.claim.repository.ClaimRepository;
+import com.project.ins.client.NumberGenerator;
 import com.project.ins.user.model.User;
 import com.project.ins.web.dto.ClaimRequest;
 import jakarta.validation.Valid;
@@ -22,12 +21,12 @@ import java.util.UUID;
 public class ClaimService {
 
     private final ClaimRepository claimRepository;
-    private final ClaimNumberGeneratorService claimNumberGeneratorService;
+    private final NumberGenerator numberGenerator;
 
-    public ClaimService(ClaimRepository claimRepository, ClaimNumberGeneratorService claimNumberGeneratorService) {
+    public ClaimService(ClaimRepository claimRepository, NumberGenerator numberGenerator) {
         this.claimRepository = claimRepository;
 
-        this.claimNumberGeneratorService = claimNumberGeneratorService;
+        this.numberGenerator = numberGenerator;
     }
 
 
@@ -47,7 +46,7 @@ public class ClaimService {
                 .owner(user)
                 .policy(claimRequest.getClientPolicy())
                 .claimType(claimType)
-                .claimNumber(claimNumberGeneratorService.generateNextClaimNumber())
+                .claimNumber(numberGenerator.getClaimNumbers())
                 .eventDate(claimRequest.getIncidentDate())
                 .createdDate(LocalDateTime.now())
                 .updatedDate(LocalDateTime.now())

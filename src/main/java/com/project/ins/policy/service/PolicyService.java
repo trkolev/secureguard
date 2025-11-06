@@ -1,14 +1,12 @@
 package com.project.ins.policy.service;
 
+import com.project.ins.client.NumberGenerator;
 import com.project.ins.exception.PolicyException;
 import com.project.ins.policy.model.Policy;
 import com.project.ins.policy.model.PolicyStatus;
 import com.project.ins.policy.repository.PolicyRepository;
-import com.project.ins.policynumbergenerator.repository.PolicyNumberGeneratorRepository;
-import com.project.ins.policynumbergenerator.service.PolicyNumberGeneratorService;
 import com.project.ins.security.UserData;
 import com.project.ins.user.model.User;
-import com.project.ins.user.service.UserService;
 import com.project.ins.web.dto.PolicyRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +25,11 @@ public class PolicyService {
 
     @Autowired
     private final PolicyRepository policyRepository;
-    private final PolicyNumberGeneratorService policyNumberGeneratorService;
+    private final NumberGenerator numberGenerator;
 
-    public PolicyService(PolicyRepository policyRepository, PolicyNumberGeneratorRepository policyNumberGeneratorRepository, PolicyNumberGeneratorService policyNumberGeneratorService, UserService userService) {
+    public PolicyService(PolicyRepository policyRepository, NumberGenerator numberGenerator) {
         this.policyRepository = policyRepository;
-        this.policyNumberGeneratorService = policyNumberGeneratorService;
+        this.numberGenerator = numberGenerator;
     }
 
 
@@ -40,7 +38,7 @@ public class PolicyService {
         if(user.getWallet().getBalance().compareTo(policyRequest.getPremiumAmount()) >= 0) {
 
             Policy policy = Policy.builder()
-                    .policyNumber(policyNumberGeneratorService.generateNextPolicyNumber())
+                    .policyNumber(numberGenerator.getResponse())
                     .owner(user)
                     .policyName(policyRequest.getPolicyName())
                     .startDate(policyRequest.getStartDate())

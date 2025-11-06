@@ -8,6 +8,7 @@ import com.project.ins.wallet.repository.WalletRepository;
 import com.project.ins.wallet.service.WalletService;
 import com.project.ins.web.dto.RegisterRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Cache;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,6 +51,11 @@ public class UserService implements UserDetailsService {
             throw new IllegalStateException("Username or email already exists");
         }
 
+        UserRole role = UserRole.USER;
+        if(findAll().isEmpty()){
+            role = UserRole.ADMIN;
+        }
+
         User user = User.builder()
                 .username(registerRequest.getUsername())
                 .firstName(registerRequest.getFirstName())
@@ -56,7 +63,7 @@ public class UserService implements UserDetailsService {
                 .address(registerRequest.getAddress())
                 .email(registerRequest.getEmail())
                 .password(PasswordEncoder.encode(registerRequest.getPassword()))
-                .role(UserRole.USER)
+                .role(role)
                 .createdAt(LocalDateTime.now())
                 .isActive(true)
                 .wallet(walletService.createDefaultWallet())
@@ -81,5 +88,9 @@ public class UserService implements UserDetailsService {
 
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }

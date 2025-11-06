@@ -31,9 +31,10 @@ public class PolicyController {
     private final UserService userService;
     private final WalletService walletService;
 
-    public PolicyController(PolicyService policyService, UserService userService, UserService userService1, WalletService walletService) {
+    @Autowired
+    public PolicyController(PolicyService policyService, UserService userService, WalletService walletService) {
         this.policyService = policyService;
-        this.userService = userService1;
+        this.userService = userService;
         this.walletService = walletService;
     }
 

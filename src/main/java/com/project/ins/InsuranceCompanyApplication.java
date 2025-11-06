@@ -2,8 +2,12 @@ package com.project.ins;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
+@EnableFeignClients
+@EnableCaching
 public class InsuranceCompanyApplication {
 
     public static final String LIGHT_GREEN = "\u001B[92m"; // Bright green
