@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +22,12 @@
                     </li>
                     <li class="nav-item">
                         <a href="/logout" class="nav-link">Logout</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a href="/admin" class="nav-link">Admin Panel</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_EMPLOYEE')">
+                        <a href="/employee" class="nav-link">Employees</a>
                     </li>
                 </ul>
                 <div class="hamburger">
@@ -76,7 +82,7 @@
                         <div class="claim-item" th:each="claim : ${claims}">
                             <div class="claim-info">
                                 <h4 th:text="*{claim.getStatus()}">Auto Accident</h4>
-                                <p>Claim #: C789123456</p>
+                                <p th:text="*{claim.getClaimNumber()}">Claim #: C789123456</p>
                             </div>
                             <div th:classappend="'claim-status ' + ${claim.status.name().toLowerCase()}" th:text="${claim.status}">Processing</div>
                         </div>
@@ -121,7 +127,7 @@
                         <div class="payment-item" th:each="payment : ${pendingPayments}">
                             <div class="payment-info">
                                 <h4 th:text="*{payment.getStatus().status}">Auto Insurance</h4>
-                                <p th:text="'Due ' + *{payment.getUpdatedDate().plusDays(15)}">Due: Dec 15, 2024</p>
+                                <p th:text="'Payment due: ' + ${#temporals.format(payment.updatedDate.plusDays(1), 'dd MMM yyyy')}">Due: Dec 15, 2024</p>
                             </div>
                             <div class="payment-amount" th:text="*{payment.getAmount()}">$125.00</div>
                         </div>
@@ -229,14 +235,14 @@
             navMenu.classList.toggle('active');
         });
 
-        // Auto-hide success message after 5 seconds
+        // Auto-hide success message after one second
         const successBanner = document.querySelector('.success-banner');
         if (successBanner) {
             setTimeout(function() {
                 successBanner.style.transition = 'opacity 0.5s';
                 successBanner.style.opacity = '0';
                 setTimeout(() => successBanner.remove(), 500);
-            }, 5000);
+            }, 1000);
         }
 
         // Close mobile menu when clicking on a link

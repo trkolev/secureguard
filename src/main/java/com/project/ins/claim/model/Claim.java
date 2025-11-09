@@ -54,4 +54,8 @@ public class Claim {
 
     private BigDecimal amount;
 
+    private String note;
+
+    private String declineReason;
+
 }

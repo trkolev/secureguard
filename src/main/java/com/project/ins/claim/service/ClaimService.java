@@ -5,16 +5,26 @@ import com.project.ins.claim.model.ClaimStatus;
 import com.project.ins.claim.model.ClaimType;
 import com.project.ins.claim.repository.ClaimRepository;
 import com.project.ins.client.NumberGenerator;
+import com.project.ins.security.UserData;
 import com.project.ins.user.model.User;
+import com.project.ins.user.service.UserService;
+import com.project.ins.wallet.model.Wallet;
+import com.project.ins.wallet.service.WalletService;
+import com.project.ins.web.dto.ClaimLiquidationRequest;
 import com.project.ins.web.dto.ClaimRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,11 +32,13 @@ public class ClaimService {
 
     private final ClaimRepository claimRepository;
     private final NumberGenerator numberGenerator;
+    private final WalletService walletService;
 
-    public ClaimService(ClaimRepository claimRepository, NumberGenerator numberGenerator) {
+    public ClaimService(ClaimRepository claimRepository, NumberGenerator numberGenerator, WalletService walletService) {
         this.claimRepository = claimRepository;
 
         this.numberGenerator = numberGenerator;
+        this.walletService = walletService;
     }
 
 
@@ -61,7 +73,6 @@ public class ClaimService {
     public List<Claim> findAllByOwnerId(UUID id) {
         List<Claim> allByOwnerId = claimRepository.findAllByOwner_Id(id);
         if (allByOwnerId.isEmpty()) {
-//            throw   new RuntimeException("This user doesn't have any claims");
             log.info("Claim findAllByOwnerId returned empty list");
         }
         return allByOwnerId;
@@ -93,5 +104,60 @@ public class ClaimService {
 
         return findAllByOwnerId(id).stream().sorted(Comparator.comparing(Claim::getCreatedDate)).filter(claim -> claim.getStatus() == ClaimStatus.APPROVED).toList();
 
+    }
+
+    public List<Claim> findAll() {
+        return claimRepository.findAll().stream().sorted(Comparator.comparing(Claim::getCreatedDate)).toList();
+    }
+
+    public boolean approveClaim(UUID claimId, ClaimLiquidationRequest request, UUID userId) {
+
+        Optional<Claim> optionalClaim = claimRepository.findById(claimId);
+        if (optionalClaim.isEmpty()) {
+            return false;
+        }
+
+        Claim claim = optionalClaim.get();
+        claim.setStatus(ClaimStatus.APPROVED);
+        claim.setDeclineReason(request.getDeclineReason());
+        claim.setUpdatedDate(LocalDateTime.now());
+        claimRepository.save(claim);
+
+        return true;
+    }
+
+    public boolean declineClaim(UUID id, ClaimLiquidationRequest request) {
+
+        Optional<Claim> optionalClaim = claimRepository.findById(id);
+        if (optionalClaim.isEmpty()) {
+            return false;
+        }
+
+        Claim claim = optionalClaim.get();
+        claim.setStatus(ClaimStatus.DECLINED);
+        claim.setDeclineReason(request.getDeclineReason());
+        claim.setUpdatedDate(LocalDateTime.now());
+        claimRepository.save(claim);
+
+        return true;
+    }
+
+    @Transactional
+    public void dailyPayments(){
+
+        List<Claim> claims = claimRepository.findAll().stream().filter(claim -> claim.getStatus() == ClaimStatus.APPROVED).toList();
+
+        for (Claim claim : claims) {
+
+            Wallet wallet = claim.getOwner().getWallet();
+            wallet.setBalance(wallet.getBalance().add(claim.getAmount()));
+            wallet.setUpdatedOn(LocalDateTime.now());
+            walletService.save(wallet);
+
+            claim.setStatus(ClaimStatus.PAID);
+            claim.setUpdatedDate(LocalDateTime.now());
+            claimRepository.save(claim);
+
+        }
     }
 }

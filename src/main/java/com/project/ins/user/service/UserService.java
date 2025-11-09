@@ -8,7 +8,8 @@ import com.project.ins.wallet.repository.WalletRepository;
 import com.project.ins.wallet.service.WalletService;
 import com.project.ins.web.dto.RegisterRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,7 +45,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public void saveUser(RegisterRequest registerRequest) {
+    public void createUser(RegisterRequest registerRequest) {
 
         Optional<User> byUsername = userRepository.findByUsernameAndEmail(registerRequest.getUsername(), registerRequest.getEmail());
         if (byUsername.isPresent()) {
@@ -92,5 +93,36 @@ public class UserService implements UserDetailsService {
 
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public boolean updateRole(UUID id, String role) {
+
+        Optional<User> userCheck = userRepository.findById(id);
+
+        if (userCheck.isEmpty()) {
+            return false;
+        }
+
+        User user = userCheck.get();
+        user.setRole(UserRole.valueOf(role));
+        userRepository.save(user);
+
+        return true;
+    }
+
+    public boolean updateStatus(UUID id, String status) {
+
+        Optional<User> userCheck = userRepository.findById(id);
+
+        if (userCheck.isEmpty()) {
+            return false;
+        }
+
+        User user = userCheck.get();
+        user.setActive(!status.equalsIgnoreCase("disable"));
+        userRepository.save(user);
+
+        return true;
+
     }
 }

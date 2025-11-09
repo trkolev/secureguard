@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Currency;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -57,5 +58,15 @@ public class WalletService {
             return transactionService.createFailTransaction(user, wallet.getBalance(), premiumAmount, "insufficient balance");
         }
 
+    }
+
+    public Wallet findByOwnerId(UUID userId) {
+
+        return walletRepository.findByOwnerId(userId);
+
+    }
+
+    public void save(Wallet wallet) {
+        walletRepository.save(wallet);
     }
 }

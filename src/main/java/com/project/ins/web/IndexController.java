@@ -59,7 +59,7 @@ public class IndexController {
             return "register";
         }
 
-        userService.saveUser(registerRequest);
+        userService.createUser(registerRequest);
 
         return "redirect:/login";
     }
