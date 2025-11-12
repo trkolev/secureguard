@@ -25,7 +25,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee")
-    public ModelAndView getEmployee(){
+    public ModelAndView getEmployee() {
 
 
         List<Claim> claims = claimService.findAll();
@@ -39,13 +39,8 @@ public class EmployeeController {
     @PatchMapping("/employee/claims/{id}/approve")
     public String approveClaim(@PathVariable UUID id, ClaimLiquidationRequest request, @AuthenticationPrincipal UserData userData, RedirectAttributes redirectAttributes) {
 
-        boolean success = claimService.approveClaim(id, request, userData.getId());
-
-        if (success) {
-            redirectAttributes.addFlashAttribute("successMessage", "Claim approved successfully");
-        } else{
-            redirectAttributes.addFlashAttribute("errorMessage", "Claim approval failed");
-        }
+        claimService.approveClaim(id, request, userData.getId());
+        redirectAttributes.addFlashAttribute("successMessage", "Claim approved successfully");
 
         return "redirect:/employee";
     }
@@ -53,13 +48,9 @@ public class EmployeeController {
     @PatchMapping("/employee/claims/{id}/decline")
     public String declineClaim(@PathVariable UUID id, ClaimLiquidationRequest request, RedirectAttributes redirectAttributes) {
 
-        boolean success = claimService.declineClaim(id, request);
+        claimService.declineClaim(id, request);
 
-        if (success) {
-            redirectAttributes.addFlashAttribute("successMessage", "Claim declined successfully");
-        }else{
-            redirectAttributes.addFlashAttribute("errorMessage", "Claim declination failed");
-        }
+        redirectAttributes.addFlashAttribute("successMessage", "Claim declined successfully");
 
         return "redirect:/employee";
     }

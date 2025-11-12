@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,10 +40,10 @@ public class IndexController {
     }
 
     @GetMapping("/register")
-    public ModelAndView register() {
+    public ModelAndView register(@ModelAttribute("registerRequest") RegisterRequest registerRequest) {
 
         ModelAndView modelAndView = new ModelAndView("register");
-        modelAndView.addObject("registerRequest", new RegisterRequest());
+        modelAndView.addObject("registerRequest", registerRequest);
         return modelAndView;
     }
 
@@ -50,12 +51,6 @@ public class IndexController {
     public String register(@Valid RegisterRequest registerRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "register";
-        }
-
-        if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
-            bindingResult.rejectValue("password", "", "Passwords do not match");
-            bindingResult.rejectValue("confirmPassword", "", "Passwords do not match");
             return "register";
         }
 

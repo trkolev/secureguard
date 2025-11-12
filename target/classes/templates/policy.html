@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard Insurance - Create New Policy</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .error-field {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>SecureGuard Insurance</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/home" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link">Logout</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a href="/admin" class="nav-link">Admin Panel</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_EMPLOYEE')">
+                        <a href="/employee" class="nav-link">Employees</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="landing" style="background:none; padding-top: 4rem;">
+            <div class="landing-inner" style="max-width:700px; width:100%;">
+                <img src="/images/logo.png" alt="SecureGuard Insurance" class="brand-image" style="width:120px; filter: drop-shadow(0 8px 18px rgba(212,175,55,0.25)); animation:none;" />
+                <h1 style="margin-top: 0.5rem; color:#ffd700; font-size:1.75rem;">Create New Policy</h1>
+                <p style="color:#e9e0c2; font-size:1rem; margin-bottom: 2rem;">Fill in the details below to create your insurance policy</p>
+
+                <!-- Policy Creation Form -->
+                <form th:action="@{/policy/create}" th:method="POST" class="policy-form" style="width:100%; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); border: 1px solid rgba(212,175,55,0.15); border-radius: 14px; padding: 1.5rem; box-shadow: 0 8px 28px rgba(0,0,0,0.35);" th:object="${policyRequest}">
+                    
+                    <!-- Success message (if any) -->
+                    <div th:if="${successMessage}" class="success-banner" style="background: rgba(40, 167, 69, 0.1); border: 1px solid #28a745; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                        <p style="color: #28a745; font-size: 0.9rem; margin: 0; font-weight: 600;" th:text="${successMessage}">Success!</p>
+                    </div>
+                    
+                    <!-- Global error messages (if any) -->
+                    <div th:if="${#fields.hasErrors('*')}" style="background: rgba(220, 53, 69, 0.1); border: 1px solid #dc3545; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                        <p style="color: #dc3545; font-size: 0.9rem; margin: 0;">Please correct the errors below:</p>
+                    </div>
+
+                    <!-- Insured Object Type -->
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="policyName" style="display: block; margin-bottom: 0.5rem; color: #f2e7bf; font-weight: 700;">Insured Object Type</label>
+                        <select id="policyName" name="policyName" required th:field="*{policyName}" style="width: 100%; padding: 0.8rem; background: #0f0f11; color: #e9e0c2; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 10px; font-size: 1rem; transition: border-color .25s ease, box-shadow .25s ease;">
+                            <option value="">Select Insured Object</option>
+                            <option value="PERSON">Life Insurance (Person)</option>
+                            <option value="VEHICLE">Vehicle Insurance</option>
+                            <option value="PROPERTY">Property Insurance</option>
+                        </select>
+                        <p style="color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem;" th:if="${#fields.hasErrors('policyName')}" th:errors="*{policyName}">Error</p>
+                    </div>
+
+                    <div class="form-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                        <!-- Coverage Amount -->
+                        <div class="form-group">
+                            <label for="coverageAmount" style="display: block; margin-bottom: 0.5rem; color: #f2e7bf; font-weight: 700;">Coverage Amount ($)</label>
+                            <input type="number" id="coverageAmount" name="coverageAmount" placeholder="e.g., 100000" required th:field="*{coverageAmount}" style="width: 100%; padding: 0.8rem; background: #0f0f11; color: #e9e0c2; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 10px; font-size: 1rem; transition: border-color .25s ease, box-shadow .25s ease;" th:classappend="${#fields.hasErrors('coverageAmount')} ? 'error-field' : ''">
+                            <p style="color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem;" th:if="${#fields.hasErrors('coverageAmount')}" th:errors="*{coverageAmount}">Error</p>
+                        </div>
+
+                        <!-- Premium Amount (Calculated as 6% of Coverage) -->
+                        <div class="form-group">
+                            <label for="premiumAmount" style="display: block; margin-bottom: 0.5rem; color: #f2e7bf; font-weight: 700;">Monthly Premium (6% of Coverage)</label>
+                            <input type="number" id="premiumAmount" name="premiumAmount" readonly th:field="*{premiumAmount}" step="0.01" style="width: 100%; padding: 0.8rem; background: #0e0e0f; color: #c8bd99; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 10px; font-size: 1rem; cursor: not-allowed;" placeholder="Auto-calculated">
+                            <p style="color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem;" th:if="${#fields.hasErrors('premiumAmount')}" th:errors="*{premiumAmount}">Error</p>
+                        </div>
+
+                        <!-- Start Date -->
+                        <div class="form-group">
+                            <label for="startDate" style="display: block; margin-bottom: 0.5rem; color: #f2e7bf; font-weight: 700;">Start Date</label>
+                            <input type="date" id="startDate" name="startDate" required th:field="*{startDate}" style="width: 100%; padding: 0.8rem; background: #0f0f11; color: #e9e0c2; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 10px; font-size: 1rem; transition: border-color .25s ease, box-shadow .25s ease;" th:classappend="${#fields.hasErrors('startDate')} ? 'error-field' : ''">
+                            <p style="color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem;" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">Error</p>
+                        </div>
+
+                        <!-- End Date -->
+                        <div class="form-group">
+                            <label for="endDate" style="display: block; margin-bottom: 0.5rem; color: #f2e7bf; font-weight: 700;">End Date</label>
+                            <input type="date" id="endDate" name="endDate" required th:field="*{endDate}" style="width: 100%; padding: 0.8rem; background: #0f0f11; color: #e9e0c2; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 10px; font-size: 1rem; transition: border-color .25s ease, box-shadow .25s ease;" th:classappend="${#fields.hasErrors('endDate')} ? 'error-field' : ''">
+                            <p style="color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem;" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">Error</p>
+                        </div>
+                    </div>
+
+                    <!-- Coverage Description -->
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label for="coverageDescription" style="display: block; margin-bottom: 0.5rem; color: #f2e7bf; font-weight: 700;">Coverage Description</label>
+                        <textarea id="coverageDescription" name="coverageDescription" placeholder="Describe what this policy covers..." rows="4" th:field="*{coverageDescription}" style="width: 100%; padding: 0.8rem; background: #0f0f11; color: #e9e0c2; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 10px; font-size: 1rem; transition: border-color .25s ease, box-shadow .25s ease; resize: vertical;" th:classappend="${#fields.hasErrors('coverageDescription')} ? 'error-field' : ''"></textarea>
+                        <p style="color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem;" th:if="${#fields.hasErrors('coverageDescription')}" th:errors="*{coverageDescription}">Error</p>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px;">
+                        <label style="display: flex; align-items: center; color: #e9e0c2; cursor: pointer;">
+                            <input type="checkbox" id="agreeTerms" name="agreeTerms" required style="width: 18px; height: 18px; margin-right: 0.75rem; cursor: pointer;">
+                            <span style="font-size: 0.95rem;">I agree to the <a href="#" style="color: #ffd700; text-decoration: underline;">terms and conditions</a> of this insurance policy</span>
+                        </label>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary btn-large" style="flex: 1;">Create Policy</button>
+                        <a href="/home" class="btn btn-secondary btn-large" style="flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; text-decoration: none;">Dashboard</a>
+                    </div>
+                </form>
+
+                <!-- Policy Information Box -->
+                <div style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 14px;">
+                    <h3 style="color: #ffd700; font-size: 1.2rem; margin-bottom: 1rem;">Important Information</h3>
+                    <ul style="color: #e9e0c2; line-height: 1.8; padding-left: 1.5rem;">
+                        <li>All policies are subject to approval by our underwriting team</li>
+                        <li>Coverage begins on the start date specified after approval</li>
+                        <li>Premium payments are due monthly on the policy anniversary date</li>
+                        <li>You can cancel your policy at any time with 30 days notice</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SecureGuard Insurance</h3>
+                    <p>Protecting what matters most to you since 2025.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/home">Dashboard</a></li>
+                        <li><a href="/profile">Profile</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@secureguard.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SecureGuard Insurance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+            document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }));
+        }
+
+        // Auto-hide success message after 5 seconds
+        const successBanner = document.querySelector('.success-banner');
+        if (successBanner) {
+            setTimeout(function() {
+                successBanner.style.transition = 'opacity 0.5s';
+                successBanner.style.opacity = '0';
+                setTimeout(() => successBanner.remove(), 500);
+            }, 5000);
+        }
+
+        // Auto-calculate Premium Amount as 6% of Coverage Amount
+        const coverageAmountInput = document.getElementById('coverageAmount');
+        const premiumAmountInput = document.getElementById('premiumAmount');
+        
+        if (coverageAmountInput && premiumAmountInput) {
+            // Calculate on page load if coverage amount has a value
+            if (coverageAmountInput.value) {
+                const premium = (parseFloat(coverageAmountInput.value) * 0.06).toFixed(2);
+                premiumAmountInput.value = premium;
+            }
+
+            // Calculate when coverage amount changes
+            coverageAmountInput.addEventListener('input', function() {
+                const coverageValue = parseFloat(this.value) || 0;
+                const premiumValue = (coverageValue * 0.06).toFixed(2);
+                premiumAmountInput.value = premiumValue;
+            });
+        }
+
+        // Update date input colors when focused
+        document.querySelectorAll('input[type="date"]').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#d4af37';
+                this.style.boxShadow = '0 0 0 4px rgba(212, 175, 55, 0.18)';
+            });
+            input.addEventListener('blur', function() {
+                if (!this.classList.contains('error-field')) {
+                    this.style.borderColor = 'rgba(212, 175, 55, 0.18)';
+                    this.style.boxShadow = 'none';
+                }
+            });
+        });
+
+        // Update select dropdown colors when focused
+        const policyName = document.querySelector('#policyName');
+        if (policyName) {
+            policyName.addEventListener('focus', function() {
+                this.style.borderColor = '#d4af37';
+                this.style.boxShadow = '0 0 0 4px rgba(212, 175, 55, 0.18)';
+            });
+            policyName.addEventListener('blur', function() {
+                if (!this.classList.contains('error-field')) {
+                    this.style.borderColor = 'rgba(212, 175, 55, 0.18)';
+                    this.style.boxShadow = 'none';
+                }
+            });
+        }
+
+        // Auto-calculate End Date as one year after Start Date
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        
+        if (startDateInput && endDateInput) {
+            startDateInput.addEventListener('change', function() {
+                if (this.value) {
+                    // Parse the start date
+                    const startDate = new Date(this.value);
+                    
+                    // Add one year to the start date
+                    const endDate = new Date(startDate);
+                    endDate.setFullYear(endDate.getFullYear() + 1);
+                    
+                    // Format the date as YYYY-MM-DD for the date input
+                    const year = endDate.getFullYear();
+                    const month = String(endDate.getMonth() + 1).padStart(2, '0');
+                    const day = String(endDate.getDate()).padStart(2, '0');
+                    const formattedDate = `${year}-${month}-${day}`;
+                    
+                    // Set the end date value
+                    endDateInput.value = formattedDate;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

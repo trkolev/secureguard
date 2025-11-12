@@ -1,0 +1,13 @@
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/InsuranceCompanyApplication.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/config/BeanConfiguration.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/policy/model/InsuredObject.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/policy/model/Policy.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/policy/repository/PolicyRepository.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/user/model/User.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/user/model/UserRole.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/user/repository/UserRepository.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/user/service/UserService.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/wallet/model/Wallet.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/wallet/repository/WalletRepository.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/web/IndexController.java
+/home/glarusbse/Softuni/ins/src/main/java/com/project/ins/web/dto/RegisterRequest.java

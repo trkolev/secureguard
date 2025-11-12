@@ -51,4 +51,6 @@ public class User {
 
     @OneToOne
     private Wallet wallet;
+
+    private String phoneNumber;
 }

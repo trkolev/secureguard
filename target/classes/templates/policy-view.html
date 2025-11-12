@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard Insurance - My Policies</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>SecureGuard Insurance</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/home" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link">Logout</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a href="/admin" class="nav-link">Admin Panel</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_EMPLOYEE')">
+                        <a href="/employee" class="nav-link">Employees</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="landing" style="background:none; padding-top: 4rem;">
+            <div class="landing-inner" style="max-width:1400px; width:100%;">
+                <img src="/images/logo.png" alt="SecureGuard Insurance" class="brand-image" style="width:120px; filter: drop-shadow(0 8px 18px rgba(212,175,55,0.25)); animation:none;" />
+                <h1 style="margin-top: 0.5rem; color:#ffd700; font-size:1.75rem;">My Policies</h1>
+                
+                <div th:if="${successMessage}" class="success-banner" style="background: rgba(40, 167, 69, 0.1); border: 1px solid #28a745; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="color: #28a745; font-size: 0.9rem; margin: 0; font-weight: 600;" th:text="${successMessage}">Success!</p>
+                </div>
+
+                <div th:if="${policies == null || policies.isEmpty()}" style="text-align: center; padding: 3rem; color: #e9e0c2;">
+                    <p style="font-size: 1.1rem;">You don't have any policies yet.</p>
+                    <a href="/policy" class="btn btn-primary btn-large" style="margin-top: 1rem; display: inline-block;">Create Your First Policy</a>
+                </div>
+
+                <div th:if="${policies != null && !policies.isEmpty()}" style="display: grid; gap: 1rem; margin-top: 2rem;">
+                    <div th:each="policy : ${policies}" style="background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); border: 1px solid rgba(212,175,55,0.15); border-radius: 14px; padding: 1rem; box-shadow: 0 8px 28px rgba(0,0,0,0.35);">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                            <div>
+                                <h3 style="color: #ffd700; font-size: 1.1rem; margin-bottom: 0.25rem;" th:text="${policy.policyName.getName()}">Policy Type</h3>
+                                <p style="color: #e9e0c2; font-size: 0.85rem;" th:text="'Policy #: ' + ${policy.policyNumber}">Policy #: A123456789</p>
+                            </div>
+                            <div th:classappend="'policy-status ' + ${policy.status.name().toLowerCase()}" style="padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.8rem;" th:text="${policy.status.getStatus()}">Active</div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 0.75rem;">
+                            <div>
+                                <p style="color: #c8bd99; font-size: 0.8rem; margin-bottom: 0.2rem;">Coverage Amount</p>
+                                <p style="color: #ffd700; font-size: 1rem; font-weight: 600;" th:text="'$' + ${#numbers.formatDecimal(policy.coverageAmount, 0, 'COMMA', 2, 'POINT')}">$100,000.00</p>
+                            </div>
+                            <div>
+                                <p style="color: #c8bd99; font-size: 0.8rem; margin-bottom: 0.2rem;">Premium Amount</p>
+                                <p style="color: #ffd700; font-size: 1rem; font-weight: 600;" th:text="'$' + ${#numbers.formatDecimal(policy.premiumAmount, 0, 'COMMA', 2, 'POINT')}">$6,000.00</p>
+                            </div>
+                            <div>
+                                <p style="color: #c8bd99; font-size: 0.8rem; margin-bottom: 0.2rem;">Start Date</p>
+                                <p style="color: #e9e0c2; font-size: 0.9rem;" th:text="${#temporals.format(policy.startDate, 'dd MMM yyyy')}">01 Jan 2025</p>
+                            </div>
+                            <div>
+                                <p style="color: #c8bd99; font-size: 0.8rem; margin-bottom: 0.2rem;">End Date</p>
+                                <p style="color: #e9e0c2; font-size: 0.9rem;" th:text="${#temporals.format(policy.endDate, 'dd MMM yyyy')}">01 Jan 2026</p>
+                            </div>
+                        </div>
+                        
+                        <div th:if="${policy.coverageDescription != null && !policy.coverageDescription.isEmpty()}" style="margin-bottom: 0.75rem;">
+                            <p style="color: #c8bd99; font-size: 0.8rem; margin-bottom: 0.2rem;">Description</p>
+                            <p style="color: #e9e0c2; font-size: 0.85rem; line-height: 1.4;" th:text="${policy.coverageDescription}">Policy description</p>
+                        </div>
+                        
+                        <div th:if="${policy.status.getStatus().equals('Active')}" style="margin-top: 0.75rem;">
+                            <form th:action="@{'/policy/' + ${policy.id} + '/cancel'}" th:method="PATCH" style="display: inline-block;">
+                                <button type="submit" class="btn btn-outline" style="width: 100%; padding: 0.5rem;">Cancel Policy</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; text-align: center;">
+                    <a href="/policy" class="btn btn-primary btn-large">Create New Policy</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SecureGuard Insurance</h3>
+                    <p>Protecting what matters most to you since 2025.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/home">Dashboard</a></li>
+                        <li><a href="/profile">Profile</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@secureguard.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SecureGuard Insurance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+
+        const successBanner = document.querySelector('.success-banner');
+        if (successBanner) {
+            setTimeout(function() {
+                successBanner.style.transition = 'opacity 0.5s';
+                successBanner.style.opacity = '0';
+                setTimeout(() => successBanner.remove(), 500);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+

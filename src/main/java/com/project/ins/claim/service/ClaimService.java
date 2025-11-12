@@ -5,6 +5,7 @@ import com.project.ins.claim.model.ClaimStatus;
 import com.project.ins.claim.model.ClaimType;
 import com.project.ins.claim.repository.ClaimRepository;
 import com.project.ins.client.NumberGenerator;
+import com.project.ins.exception.ClaimNotFoundException;
 import com.project.ins.security.UserData;
 import com.project.ins.user.model.User;
 import com.project.ins.user.service.UserService;
@@ -110,11 +111,11 @@ public class ClaimService {
         return claimRepository.findAll().stream().sorted(Comparator.comparing(Claim::getCreatedDate)).toList();
     }
 
-    public boolean approveClaim(UUID claimId, ClaimLiquidationRequest request, UUID userId) {
+    public void approveClaim(UUID claimId, ClaimLiquidationRequest request, UUID userId) {
 
         Optional<Claim> optionalClaim = claimRepository.findById(claimId);
         if (optionalClaim.isEmpty()) {
-            return false;
+            throw new ClaimNotFoundException();
         }
 
         Claim claim = optionalClaim.get();
@@ -123,14 +124,13 @@ public class ClaimService {
         claim.setUpdatedDate(LocalDateTime.now());
         claimRepository.save(claim);
 
-        return true;
     }
 
-    public boolean declineClaim(UUID id, ClaimLiquidationRequest request) {
+    public void declineClaim(UUID id, ClaimLiquidationRequest request) {
 
         Optional<Claim> optionalClaim = claimRepository.findById(id);
         if (optionalClaim.isEmpty()) {
-            return false;
+            throw new ClaimNotFoundException();
         }
 
         Claim claim = optionalClaim.get();
@@ -139,7 +139,6 @@ public class ClaimService {
         claim.setUpdatedDate(LocalDateTime.now());
         claimRepository.save(claim);
 
-        return true;
     }
 
     @Transactional

@@ -39,13 +39,8 @@ public class AdminController {
     @PatchMapping("/admin/users/{id}/role")
     public String updateRole(@PathVariable("id") UUID id, @RequestParam("role") String role, RedirectAttributes redirectAttributes) {
 
-        boolean success = userService.updateRole(id, role);
-
-        if (success) {
-            redirectAttributes.addFlashAttribute("successMessage", "User role has been updated successfully");
-        }else{
-            redirectAttributes.addFlashAttribute("errorMessage", "User role update failed!");
-        }
+        userService.updateRole(id, role);
+        redirectAttributes.addFlashAttribute("successMessage", "User role has been updated successfully");
 
         return "redirect:/admin";
     }
@@ -53,13 +48,9 @@ public class AdminController {
     @PatchMapping("/admin/users/{id}/{status}")
     public String disable(@PathVariable("id") UUID id, @PathVariable("status") String status, RedirectAttributes redirectAttributes) {
 
-        boolean success = userService.updateStatus(id, status);
+        userService.updateStatus(id, status);
 
-        if (success) {
             redirectAttributes.addFlashAttribute("successMessage", "User staus has been updated successfully");
-        }else{
-            redirectAttributes.addFlashAttribute("errorMessage", "User status update failed!");
-        }
 
         return "redirect:/admin";
     }

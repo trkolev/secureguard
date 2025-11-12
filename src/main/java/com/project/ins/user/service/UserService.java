@@ -1,15 +1,16 @@
 package com.project.ins.user.service;
 
+import com.project.ins.exception.*;
 import com.project.ins.security.UserData;
 import com.project.ins.user.model.User;
 import com.project.ins.user.model.UserRole;
 import com.project.ins.user.repository.UserRepository;
-import com.project.ins.wallet.repository.WalletRepository;
 import com.project.ins.wallet.service.WalletService;
+import com.project.ins.web.dto.PasswordChangeRequest;
 import com.project.ins.web.dto.RegisterRequest;
+import com.project.ins.web.dto.UpdateUserDto;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,12 +27,12 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder PasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final WalletService walletService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, WalletRepository walletRepository, WalletService walletService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, WalletService walletService) {
         this.userRepository = userRepository;
-        PasswordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
         this.walletService = walletService;
     }
 
@@ -47,9 +48,13 @@ public class UserService implements UserDetailsService {
 
     public void createUser(RegisterRequest registerRequest) {
 
-        Optional<User> byUsername = userRepository.findByUsernameAndEmail(registerRequest.getUsername(), registerRequest.getEmail());
+        Optional<User> byUsername = userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail());
         if (byUsername.isPresent()) {
-            throw new IllegalStateException("Username or email already exists");
+            throw new UserOrEmailAlreadyExistException("Username or email already exists");
+        }
+
+        if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
+            throw new RegisterPasswordDifferException("Passwords do not match", registerRequest);
         }
 
         UserRole role = UserRole.USER;
@@ -63,7 +68,7 @@ public class UserService implements UserDetailsService {
                 .lastName(registerRequest.getLastName())
                 .address(registerRequest.getAddress())
                 .email(registerRequest.getEmail())
-                .password(PasswordEncoder.encode(registerRequest.getPassword()))
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .role(role)
                 .createdAt(LocalDateTime.now())
                 .isActive(true)
@@ -80,9 +85,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
 
-    public RegisterRequest mapUserToRegisterRequest(User user) {
+    public UpdateUserDto mapUserToUpdateDto(User user) {
 
-        return new RegisterRequest(user.getUsername(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getEmail(), "", "");
+        return new UpdateUserDto(user.getUsername(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhoneNumber(), user.getEmail());
 
     }
 
@@ -95,34 +100,59 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public boolean updateRole(UUID id, String role) {
+    public void updateRole(UUID id, String role) {
 
-        Optional<User> userCheck = userRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findById(id);
 
-        if (userCheck.isEmpty()) {
-            return false;
+        if (optionalUser.isEmpty()) {
+            throw new UserUpdateException("User not found");
         }
 
-        User user = userCheck.get();
+        User user = optionalUser.get();
         user.setRole(UserRole.valueOf(role));
         userRepository.save(user);
 
-        return true;
     }
 
-    public boolean updateStatus(UUID id, String status) {
+    public void updateStatus(UUID id, String status) {
 
         Optional<User> userCheck = userRepository.findById(id);
 
         if (userCheck.isEmpty()) {
-            return false;
+            throw new UserUpdateException("User not found");
         }
 
         User user = userCheck.get();
         user.setActive(!status.equalsIgnoreCase("disable"));
         userRepository.save(user);
 
-        return true;
+    }
+
+
+    public void changePassword(User user, @Valid PasswordChangeRequest passwordChange) {
+
+        if(!passwordEncoder.matches(passwordChange.getCurrentPassword(), user.getPassword())) {
+            throw new WrongPasswordException();
+        }
+
+        if(!passwordChange.getNewPassword().equals(passwordChange.getConfirmPassword())) {
+            throw new PasswordDifferException();
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordChange.getNewPassword()));
+        userRepository.save(user);
+
+    }
+
+    public void updateUserInformation(@Valid UpdateUserDto updateUserDto, User user) {
+
+        user.setFirstName(updateUserDto.getFirstName());
+        user.setLastName(updateUserDto.getLastName());
+        user.setAddress(updateUserDto.getAddress());
+        user.setEmail(updateUserDto.getEmail());
+        user.setPhoneNumber(updateUserDto.getPhoneNumber());
+
+        userRepository.save(user);
 
     }
 }

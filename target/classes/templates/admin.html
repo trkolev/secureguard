@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard Insurance - Admin Panel</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>SecureGuard Insurance</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/home" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link">Logout</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a href="/admin" class="nav-link active">Admin Panel</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_EMPLOYEE')">
+                        <a href="/employee" class="nav-link">Employees</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="landing" style="background:none; padding-top: 4rem;">
+            <div class="landing-inner" style="max-width:1200px; width:100%;">
+                <img src="/images/logo.png" alt="SecureGuard Insurance" class="brand-image" style="width:120px; filter: drop-shadow(0 8px 18px rgba(212,175,55,0.25)); animation:none;" />
+                <h1 style="margin-top: 0.5rem; color:#ffd700; font-size:1.75rem;">Admin Panel</h1>
+                
+                <div th:if="${successMessage}" class="success-banner" style="background: rgba(40, 167, 69, 0.1); border: 1px solid #28a745; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="color: #28a745; font-size: 0.9rem; margin: 0; font-weight: 600;" th:text="${successMessage}">Success!</p>
+                </div>
+
+                <div th:if="${errorMessage}" class="error-banner" style="background: rgba(220, 53, 69, 0.1); border: 1px solid #dc3545; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="color: #dc3545; font-size: 0.9rem; margin: 0; font-weight: 600;" th:text="${errorMessage}">Error!</p>
+                </div>
+
+                <div style="margin-top: 2rem; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); border: 1px solid rgba(212,175,55,0.15); border-radius: 14px; overflow: hidden;">
+                        <thead>
+                            <tr style="background: rgba(212, 175, 55, 0.1);">
+                                <th style="padding: 1rem; text-align: left; color: #ffd700; font-weight: 700; border-bottom: 1px solid rgba(212,175,55,0.2);">Username</th>
+                                <th style="padding: 1rem; text-align: left; color: #ffd700; font-weight: 700; border-bottom: 1px solid rgba(212,175,55,0.2);">Name</th>
+                                <th style="padding: 1rem; text-align: left; color: #ffd700; font-weight: 700; border-bottom: 1px solid rgba(212,175,55,0.2);">Email</th>
+                                <th style="padding: 1rem; text-align: left; color: #ffd700; font-weight: 700; border-bottom: 1px solid rgba(212,175,55,0.2);">Role</th>
+                                <th style="padding: 1rem; text-align: left; color: #ffd700; font-weight: 700; border-bottom: 1px solid rgba(212,175,55,0.2);">Status</th>
+                                <th style="padding: 1rem; text-align: center; color: #ffd700; font-weight: 700; border-bottom: 1px solid rgba(212,175,55,0.2);">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}" style="border-bottom: 1px solid rgba(212,175,55,0.1);">
+                                <td style="padding: 1rem; color: #e9e0c2;" th:text="${user.username}">username</td>
+                                <td style="padding: 1rem; color: #e9e0c2;" th:text="${user.firstName + ' ' + user.lastName}">John Doe</td>
+                                <td style="padding: 1rem; color: #e9e0c2;" th:text="${user.email}">email@example.com</td>
+                                <td style="padding: 1rem;">
+                                    <form th:action="@{'/admin/users/' + ${user.id} + '/role'}" th:method="PATCH" style="display: inline-block;">
+                                        <select name="role" onchange="this.form.submit()" style="padding: 0.5rem; background: #0f0f11; color: #e9e0c2; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 6px; cursor: pointer;">
+                                            <option value="USER" th:selected="${user.role.name() == 'USER'}">USER</option>
+                                            <option value="ADMIN" th:selected="${user.role.name() == 'ADMIN'}">ADMIN</option>
+                                            <option value="EMPLOYEE" th:selected="${user.role.name() == 'EMPLOYEE'}">EMPLOYEE</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td style="padding: 1rem;">
+                                    <span th:if="${user.isActive}" style="color: #28a745; font-weight: 600;">Active</span>
+                                    <span th:if="${!user.isActive}" style="color: #dc3545; font-weight: 600;">Inactive</span>
+                                </td>
+                                <td style="padding: 1rem; text-align: center;">
+                                    <form th:if="${user.isActive}" th:action="@{'/admin/users/' + ${user.id} + '/disable'}" th:method="PATCH" style="display: inline-block;">
+                                        <button type="submit" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Disable</button>
+                                    </form>
+                                    <form th:if="${!user.isActive}" th:action="@{'/admin/users/' + ${user.id} + '/enable'}" th:method="PATCH" style="display: inline-block;">
+                                        <button type="submit" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Enable</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SecureGuard Insurance</h3>
+                    <p>Protecting what matters most to you since 2025.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/home">Dashboard</a></li>
+                        <li><a href="/profile">Profile</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@secureguard.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SecureGuard Insurance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+
+        const successBanner = document.querySelector('.success-banner');
+        if (successBanner) {
+            setTimeout(function() {
+                successBanner.style.transition = 'opacity 0.5s';
+                successBanner.style.opacity = '0';
+                setTimeout(() => successBanner.remove(), 500);
+            }, 3000);
+        }
+
+        const errorBanner = document.querySelector('.error-banner');
+        if (errorBanner) {
+            setTimeout(function() {
+                errorBanner.style.transition = 'opacity 0.5s';
+                errorBanner.style.opacity = '0';
+                setTimeout(() => errorBanner.remove(), 500);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+

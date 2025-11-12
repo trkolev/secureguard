@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard Insurance - Register</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>SecureGuard Insurance</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/login" class="nav-link">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/register" class="nav-link active">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/about" class="nav-link">About Us</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="landing" style="background:none; padding-top: 4rem;">
+            <div class="landing-inner" style="max-width:600px; width:100%;">
+                <img src="/images/logo.png" alt="SecureGuard Insurance" class="brand-image" style="width:120px; filter: drop-shadow(0 8px 18px rgba(212,175,55,0.25)); animation:none;" />
+                <h1 style="margin-top: 0.5rem; color:#ffd700; font-size:1.75rem;">Create Your Account</h1>
+
+                <div th:if="${errorMessage}" class="error-banner" style="background: rgba(252,7,7,0.1); border: 1px solid #be1a1a; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="color: #b01b1b; font-size: 0.9rem; margin: 0; font-weight: 600;" th:text="${errorMessage}">Error!</p>
+                </div>
+
+                <form th:action="@{/register}" th:method="post" class="register-form" style="width:100%; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); border: 1px solid rgba(212,175,55,0.15); border-radius: 14px; padding: 1.25rem; box-shadow: 0 8px 28px rgba(0,0,0,0.35);" th:object="${registerRequest}">
+                    <div class="form-grid">
+                        <!-- Row 1: Username centered (spans both columns but constrained so it doesn't get larger) -->
+                        <div style="grid-column: 1 / -1; display: flex; justify-content: center;">
+                            <div class="form-group" style="width: 100%; max-width: calc((100% - 1.5rem) / 2);">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" placeholder="Enter username" required th:field="*{username}">
+                                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" style="color: #b01b1b; font-size: 0.9rem; margin: 0; font-weight: 600;"></p>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: First Name | Last Name -->
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName" placeholder="Enter first name" required th:field="*{firstName}">
+                            <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" style="color: #b01b1b; font-size: 0.9rem; margin: 0; font-weight: 600;"></p>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" placeholder="Enter last name" required th:field="*{lastName}">
+                            <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" style="color: #b01b1b; font-size: 0.9rem; margin: 0; font-weight: 600;"></p>
+
+                        </div>
+
+                        <!-- Row 3: Address | Email -->
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" id="address" name="address" placeholder="Street, City, ZIP" th:field="*{address}">
+                            <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" style="color: #b01b1b; font-size: 0.9rem; margin: 0; font-weight: 600;"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mail Address</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required th:field="*{email}">
+                            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: #b01b1b; font-size: 0.9rem; margin: 0; font-weight: 600;"></p>
+                        </div>
+
+                        <!-- Row 4: Password | Confirm Password -->
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" placeholder="Create password" required th:field="*{password}">
+                            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: #b01b1b; font-size: 0.9rem; margin: 0; font-weight: 600;"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password" required th:field="*{confirmPassword}">
+                            <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" style="color: #b01b1b; font-size: 0.9rem; margin: 0; font-weight: 600;"></p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large" style="width:100%; margin-top: 1rem;">Submit</button>
+                </form>
+
+                <p style="margin-top:1rem; color:#c8bd99; font-size:0.95rem;">Already have an account? <a href="/login" style="color:#ffd700; text-decoration:none;">Login</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SecureGuard Insurance</h3>
+                    <p>Protecting what matters most to you since 2025.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@secureguard.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SecureGuard Insurance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+            document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }));
+        }
+    </script>
+</body>
+</html>
+
+

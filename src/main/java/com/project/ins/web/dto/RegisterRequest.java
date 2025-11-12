@@ -26,6 +26,8 @@ public class RegisterRequest {
 
     private String address;
 
+    private String phoneNumber;
+
     @Email
     @NotNull
     private String email;
