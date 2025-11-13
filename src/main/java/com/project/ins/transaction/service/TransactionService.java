@@ -33,7 +33,7 @@ public class TransactionService {
                 .owner(user)
                 .amount(BigDecimal.valueOf(200.00))
                 .balanceLeft(balance)
-                .currency(Currency.getInstance("EUR"))
+                .currency(Currency.getInstance("EUR").getCurrencyCode())
                 .status(TransactionStatus.SUCCESS)
                 .type(TransactionType.DEPOSIT)
                 .createdOn(LocalDateTime.now())
@@ -41,7 +41,6 @@ public class TransactionService {
                 .build();
 
         transactionRepository.save(transaction);
-
 
     }
 
@@ -61,7 +60,7 @@ public class TransactionService {
                 .owner(user)
                 .amount(amount)
                 .balanceLeft(balance.subtract(amount))
-                .currency(Currency.getInstance("EUR"))
+                .currency(Currency.getInstance("EUR").getCurrencyCode())
                 .status(TransactionStatus.SUCCESS)
                 .type(TransactionType.WITHDRAW)
                 .createdOn(LocalDateTime.now())
@@ -79,7 +78,7 @@ public class TransactionService {
                 .owner(user)
                 .amount(amount)
                 .balanceLeft(balance)
-                .currency(Currency.getInstance("EUR"))
+                .currency(Currency.getInstance("EUR").getCurrencyCode())
                 .status(TransactionStatus.FAILED)
                 .type(TransactionType.WITHDRAW)
                 .createdOn(LocalDateTime.now())

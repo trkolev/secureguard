@@ -11,17 +11,127 @@
             box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
         }
         .claim-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.15);
+        }
+        .action-form {
             display: flex;
+            flex-direction: column;
             gap: 1rem;
-            margin-top: 1rem;
+            height: 100%;
         }
-        .claim-form-inline {
+        .action-form-header {
+            color: #f2e7bf;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .action-form-fields {
             display: flex;
-            gap: 0.5rem;
-            align-items: flex-end;
-        }
-        .claim-form-inline input {
+            flex-direction: column;
+            gap: 0.75rem;
             flex: 1;
+        }
+        .action-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .action-form-group label {
+            color: #f2e7bf;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .action-form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background: #0f0f11;
+            color: #e9e0c2;
+            border: 2px solid rgba(212, 175, 55, 0.18);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .action-form-group input:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        .action-form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #0f0f11;
+            color: #e9e0c2;
+            border: 2px solid rgba(212, 175, 55, 0.18);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+            flex: 1;
+        }
+        .action-form-group.decline-reason-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .action-form-group textarea:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        .action-form-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+        .btn-approve {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
+        }
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #34ce57, #28a745);
+        }
+        .btn-decline {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.25);
+        }
+        .btn-decline:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+            background: linear-gradient(135deg, #e4606d, #dc3545);
+        }
+        @media (max-width: 768px) {
+            .claim-actions {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -82,7 +192,7 @@
                             <div>
                                 <h3 style="color: #ffd700; font-size: 1.3rem; margin-bottom: 0.5rem;" th:text="'Claim #: ' + ${claim.claimNumber}">Claim #: C789123456</h3>
                                 <p style="color: #e9e0c2; font-size: 0.9rem;" th:if="${claim.policy != null}" th:text="'Policy #: ' + ${claim.policy.policyNumber}">Policy #: A123456789</p>
-                                <p style="color: #c8bd99; font-size: 0.85rem; margin-top: 0.25rem;" th:text="'Owner: ' + ${claim.owner.username}">Owner: username</p>
+                                <p style="color: #c8bd99; font-size: 0.85rem; margin-top: 0.25rem;" th:text="'Owner: ' + ${claim.owner.firstName + ' ' + claim.owner.lastName}">Owner: username</p>
                             </div>
                             <div th:classappend="'claim-status ' + ${claim.status.name().toLowerCase()}" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem;" th:text="${claim.status.getStatus()}">Registered</div>
                         </div>
@@ -120,27 +230,33 @@
                         </div>
                         
                         <div th:if="${claim.status.name().equals('REGISTERED') || claim.status.name().equals('REVIEWING')}" class="claim-actions">
-                            <form th:action="@{'/employee/claims/' + ${claim.id} + '/approve'}" th:method="PATCH" style="flex: 1;">
-                                <div class="claim-form-inline">
-                                    <div style="flex: 1;">
-                                        <label for="amount" style="display: block; margin-bottom: 0.25rem; color: #f2e7bf; font-size: 0.85rem; font-weight: 600;">Estimated Amount ($)</label>
-                                        <input type="number" id="amount" name="amount" step="0.01" placeholder="0.00" required style="width: 100%; padding: 0.6rem; background: #0f0f11; color: #e9e0c2; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 8px; font-size: 0.9rem;">
+                            <form th:action="@{'/employee/claims/' + ${claim.id} + '/approve'}" th:method="PATCH" class="action-form">
+                                <div class="action-form-header">Approve Claim</div>
+                                <div class="action-form-fields">
+                                    <div class="action-form-group">
+                                        <label th:for="'amount-' + ${claim.id}">Estimated Amount ($)</label>
+                                        <input type="number" th:id="'amount-' + ${claim.id}" name="amount" step="0.01" placeholder="0.00" required>
                                     </div>
-                                    <div style="flex: 1;">
-                                        <label for="note" style="display: block; margin-bottom: 0.25rem; color: #f2e7bf; font-size: 0.85rem; font-weight: 600;">Note (optional)</label>
-                                        <input type="text" id="note" name="note" placeholder="Add a note..." style="width: 100%; padding: 0.6rem; background: #0f0f11; color: #e9e0c2; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 8px; font-size: 0.9rem;">
+                                    <div class="action-form-group">
+                                        <label th:for="'note-' + ${claim.id}">Note (optional)</label>
+                                        <input type="text" th:id="'note-' + ${claim.id}" name="note" placeholder="Add a note...">
                                     </div>
-                                    <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem; white-space: nowrap;">Approve</button>
+                                </div>
+                                <div class="action-form-actions">
+                                    <button type="submit" class="btn-approve">Approve</button>
                                 </div>
                             </form>
                             
-                            <form th:action="@{'/employee/claims/' + ${claim.id} + '/decline'}" th:method="PATCH" style="flex: 1;">
-                                <div class="claim-form-inline">
-                                    <div style="flex: 1;">
-                                        <label for="declineReason" style="display: block; margin-bottom: 0.25rem; color: #f2e7bf; font-size: 0.85rem; font-weight: 600;">Decline Reason</label>
-                                        <input type="text" id="declineReason" name="declineReason" placeholder="Reason for decline..." required style="width: 100%; padding: 0.6rem; background: #0f0f11; color: #e9e0c2; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 8px; font-size: 0.9rem;">
+                            <form th:action="@{'/employee/claims/' + ${claim.id} + '/decline'}" th:method="PATCH" class="action-form">
+                                <div class="action-form-header">Decline Claim</div>
+                                <div class="action-form-fields">
+                                    <div class="action-form-group decline-reason-group">
+                                        <label th:for="'declineReason-' + ${claim.id}">Decline Reason</label>
+                                        <textarea th:id="'declineReason-' + ${claim.id}" name="declineReason" placeholder="Reason for decline..." required></textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-outline" style="padding: 0.6rem 1.5rem; white-space: nowrap; background: rgba(220, 53, 69, 0.1); border-color: #dc3545; color: #dc3545;">Decline</button>
+                                </div>
+                                <div class="action-form-actions">
+                                    <button type="submit" class="btn-decline">Decline</button>
                                 </div>
                             </form>
                         </div>

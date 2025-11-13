@@ -11,11 +11,9 @@ import com.project.ins.user.model.User;
 import com.project.ins.user.service.UserService;
 import com.project.ins.wallet.model.Wallet;
 import com.project.ins.web.dto.PasswordChangeRequest;
-import com.project.ins.web.dto.RegisterRequest;
 import com.project.ins.web.dto.UpdateUserDto;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +53,7 @@ public class HomeController {
         BigDecimal totalCoverage = policyService.findTotalCoverage(userData.getId());
         BigDecimal totalPremium = policyService.findTotalPremium(userData.getId());
         int claimsThisYear = claimService.findClaimsThisYear(userData.getId());
-        List<Claim> pendingPayments = claimService.upcomingPayments(userData.getId());
+        List<Claim> pendingPayments = claimService.upcomingPaymentsLimit(userData.getId());
 
         ModelAndView modelAndView = new ModelAndView("home");
         modelAndView.addObject("user", user);

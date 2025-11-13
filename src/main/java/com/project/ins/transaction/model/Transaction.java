@@ -31,7 +31,7 @@ public class Transaction {
     private BigDecimal balanceLeft;
 
     @Column(nullable = false)
-    private Currency currency;
+    private String currency;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

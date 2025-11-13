@@ -129,11 +129,11 @@
                                 <h4 th:text="*{payment.getStatus().status}">Auto Insurance</h4>
                                 <p th:text="'Payment due: ' + ${#temporals.format(payment.updatedDate.plusDays(1), 'dd MMM yyyy')}">Due: Dec 15, 2024</p>
                             </div>
-                            <div class="payment-amount" th:text="*{payment.getAmount()}">$125.00</div>
+                            <div class="payment-amount" th:text="'€' + *{payment.getAmount()}">$125.00</div>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-primary">View All</a>
+                        <a th:href="@{/payment-view}" class="btn btn-primary">View All</a>
                     </div>
                 </div>
 
@@ -151,7 +151,7 @@
                         <div class="payment-item" th:each="transaction : ${transactions}">
                             <div class="payment-info">
                                 <h4 th:text="${transaction.getDescription()}">Premium Payment</h4>
-                                <p th:text="${transaction.createdOn}">Jan 10, 2025</p>
+                                <p th:text="${#temporals.format(transaction.createdOn, 'dd MMM yyyy')}">10 Jan, 2025</p>
                             </div>
                             <div class="payment-amount" th:if="${transaction.type == T(com.project.ins.transaction.model.TransactionType).WITHDRAW}" style="color: #dc3545;" th:text="${transaction.getAmount()}">-$214.50</div>
                             <div class="payment-amount" th:if="${transaction.type == T(com.project.ins.transaction.model.TransactionType).DEPOSIT}" style="color: #28a745;" th:text="${transaction.getAmount()}">+$500.00</div>

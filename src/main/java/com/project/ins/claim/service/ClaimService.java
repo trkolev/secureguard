@@ -107,6 +107,12 @@ public class ClaimService {
 
     }
 
+    public List<Claim> upcomingPaymentsLimit(UUID id) {
+
+        return findAllByOwnerId(id).stream().sorted(Comparator.comparing(Claim::getCreatedDate)).filter(claim -> claim.getStatus() == ClaimStatus.APPROVED).limit(3).toList();
+
+    }
+
     public List<Claim> findAll() {
         return claimRepository.findAll().stream().sorted(Comparator.comparing(Claim::getCreatedDate)).toList();
     }
@@ -122,6 +128,7 @@ public class ClaimService {
         claim.setStatus(ClaimStatus.APPROVED);
         claim.setDeclineReason(request.getDeclineReason());
         claim.setUpdatedDate(LocalDateTime.now());
+        claim.setAmount(request.getAmount());
         claimRepository.save(claim);
 
     }
