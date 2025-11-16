@@ -2,6 +2,8 @@ package com.project.ins.web;
 
 import com.project.ins.claim.model.Claim;
 import com.project.ins.claim.service.ClaimService;
+import com.project.ins.notification.client.dto.Notification;
+import com.project.ins.notification.service.NotificationService;
 import com.project.ins.policy.model.Policy;
 import com.project.ins.policy.service.PolicyService;
 import com.project.ins.security.UserData;
@@ -32,12 +34,14 @@ public class HomeController {
     private final PolicyService policyService;
     private final TransactionService transactionService;
     private final ClaimService claimService;
+    private final NotificationService notificationService;
 
-    public HomeController(UserService userService, PolicyService policyService, TransactionService transactionService, ClaimService claimService) {
+    public HomeController(UserService userService, PolicyService policyService, TransactionService transactionService, ClaimService claimService, NotificationService notificationService) {
         this.userService = userService;
         this.policyService = policyService;
         this.transactionService = transactionService;
         this.claimService = claimService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/home")
@@ -54,6 +58,8 @@ public class HomeController {
         BigDecimal totalPremium = policyService.findTotalPremium(userData.getId());
         int claimsThisYear = claimService.findClaimsThisYear(userData.getId());
         List<Claim> pendingPayments = claimService.upcomingPaymentsLimit(userData.getId());
+        List<Notification> notifications = notificationService.getNotificationsLimit(userData.getId());
+        int notificationsCount = notificationService.getNotificationsLimit(userData.getId()).size();
 
         ModelAndView modelAndView = new ModelAndView("home");
         modelAndView.addObject("user", user);
@@ -67,6 +73,8 @@ public class HomeController {
         modelAndView.addObject("totalPremium", totalPremium);
         modelAndView.addObject("claimsThisYear", claimsThisYear);
         modelAndView.addObject("pendingPayments", pendingPayments);
+        modelAndView.addObject("notifications", notifications);
+        modelAndView.addObject("notificationsCount", notificationsCount);
 
         return modelAndView;
     }
@@ -127,8 +135,11 @@ public class HomeController {
     }
 
     @GetMapping("/notifications")
-    public String testNotifications() {
-        claimService.dailyPayments();
-        return "home";
+    public ModelAndView testNotifications(@AuthenticationPrincipal UserData userData) {
+
+        List<Notification> notifications = notificationService.getNotifications(userData.getId());
+        ModelAndView modelAndView = new ModelAndView("notification-view");
+        modelAndView.addObject("notifications", notifications);
+        return modelAndView;
     }
 }

@@ -14,10 +14,10 @@ import java.util.UUID;
 @FeignClient(name = "notification-client", url = "http://localhost:8082/api/v1/")
 public interface NotificationClient {
 
-    @PostMapping("/sms")
+    @PostMapping("sms")
     String sendSms(SmsSendRequest smsSendRequest);
 
-    @GetMapping("/sms")
-    ResponseEntity<List<Notification>> getNotifications(@RequestParam("ussrId")UUID ussrId);
+    @GetMapping("sms")
+    ResponseEntity<List<Notification>> getNotifications(@RequestParam("userId")UUID ussrId);
 
 }
