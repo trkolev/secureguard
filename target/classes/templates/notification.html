@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard Insurance - Notifications</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>SecureGuard Insurance</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/home" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link">Logout</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a href="/admin" class="nav-link">Admin Panel</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_EMPLOYEE')">
+                        <a href="/employee" class="nav-link">Employees</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="landing" style="background:none; padding-top: 4rem;">
+            <div class="landing-inner" style="max-width:1400px; width:100%;">
+                <img src="/images/logo.png" alt="SecureGuard Insurance" class="brand-image" style="width:120px; filter: drop-shadow(0 8px 18px rgba(212,175,55,0.25)); animation:none;" />
+                <h1 style="margin-top: 0.5rem; color:#ffd700; font-size:1.75rem;">My Notifications</h1>
+                
+                <div th:if="${successMessage}" class="success-banner" style="background: rgba(40, 167, 69, 0.1); border: 1px solid #28a745; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="color: #28a745; font-size: 0.9rem; margin: 0; font-weight: 600;" th:text="${successMessage}">Success!</p>
+                </div>
+
+                <div th:if="${errorMessage}" class="error-banner" style="background: rgba(220, 53, 69, 0.1); border: 1px solid #dc3545; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="color: #dc3545; font-size: 0.9rem; margin: 0; font-weight: 600;" th:text="${errorMessage}">Error!</p>
+                </div>
+
+                <div th:if="${notifications == null || notifications.isEmpty()}" style="text-align: center; padding: 3rem; color: #e9e0c2;">
+                    <p style="font-size: 1.1rem;">You don't have any notifications yet.</p>
+                </div>
+
+                <div th:if="${notifications != null && !notifications.isEmpty()}" style="margin-top: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="color: #ffd700; font-size: 1.25rem; margin: 0;">All Notifications</h2>
+                        <form th:action="@{/notifications/delete-all}" th:method="DELETE" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete all notifications? This action cannot be undone.');">
+                            <button type="submit" class="btn btn-outline" style="padding: 0.75rem 1.5rem; background: rgba(220, 53, 69, 0.1); border-color: #dc3545; color: #dc3545;">
+                                Delete All Notifications
+                            </button>
+                        </form>
+                    </div>
+
+                    <div style="display: grid; gap: 1rem;">
+                        <div th:each="notification : ${notifications}" style="background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); border: 1px solid rgba(212,175,55,0.15); border-radius: 14px; padding: 1rem; box-shadow: 0 8px 28px rgba(0,0,0,0.35);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                                <div style="flex: 1;">
+                                    <p style="color: #e9e0c2; font-size: 0.95rem; line-height: 1.5; margin: 0;" th:text="${notification.message}">Notification message</p>
+                                </div>
+                                <div th:classappend="'notification-status-badge ' + ${notification.status != null ? notification.status.toLowerCase() : 'unread'}" 
+                                     style="padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.8rem; margin-left: 1rem; white-space: nowrap;" 
+                                     th:text="${notification.status != null ? notification.status : 'Unread'}">Unread</div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(212,175,55,0.1);">
+                                <p style="color: #c8bd99; font-size: 0.85rem; margin: 0;" th:text="${#temporals.format(notification.createdAt, 'dd MMM yyyy HH:mm')}">01 Jan 2025 10:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; text-align: center;">
+                    <a href="/home" class="btn btn-primary btn-large">Back to Dashboard</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SecureGuard Insurance</h3>
+                    <p>Protecting what matters most to you since 2025.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/home">Dashboard</a></li>
+                        <li><a href="/profile">Profile</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@secureguard.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SecureGuard Insurance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+
+        const successBanner = document.querySelector('.success-banner');
+        if (successBanner) {
+            setTimeout(function() {
+                successBanner.style.transition = 'opacity 0.5s';
+                successBanner.style.opacity = '0';
+                setTimeout(() => successBanner.remove(), 500);
+            }, 3000);
+        }
+
+        const errorBanner = document.querySelector('.error-banner');
+        if (errorBanner) {
+            setTimeout(function() {
+                errorBanner.style.transition = 'opacity 0.5s';
+                errorBanner.style.opacity = '0';
+                setTimeout(() => errorBanner.remove(), 500);
+            }, 5000);
+        }
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+            if (hamburger && navMenu) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        }));
+    </script>
+</body>
+</html>
+
+

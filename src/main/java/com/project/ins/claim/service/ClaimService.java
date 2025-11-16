@@ -4,11 +4,12 @@ import com.project.ins.claim.model.Claim;
 import com.project.ins.claim.model.ClaimStatus;
 import com.project.ins.claim.model.ClaimType;
 import com.project.ins.claim.repository.ClaimRepository;
-import com.project.ins.client.NumberGenerator;
+import com.project.ins.notification.service.NotificationService;
+import com.project.ins.numbergenerator.NumberGenerator;
 import com.project.ins.exception.ClaimNotFoundException;
-import com.project.ins.security.UserData;
+import com.project.ins.transaction.model.Transaction;
+import com.project.ins.transaction.service.TransactionService;
 import com.project.ins.user.model.User;
-import com.project.ins.user.service.UserService;
 import com.project.ins.wallet.model.Wallet;
 import com.project.ins.wallet.service.WalletService;
 import com.project.ins.web.dto.ClaimLiquidationRequest;
@@ -16,8 +17,7 @@ import com.project.ins.web.dto.ClaimRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,12 +34,16 @@ public class ClaimService {
     private final ClaimRepository claimRepository;
     private final NumberGenerator numberGenerator;
     private final WalletService walletService;
+    private final NotificationService notificationService;
+    private final TransactionService transactionService;
 
-    public ClaimService(ClaimRepository claimRepository, NumberGenerator numberGenerator, WalletService walletService) {
+    public ClaimService(ClaimRepository claimRepository, NumberGenerator numberGenerator, WalletService walletService, NotificationService notificationService, TransactionService transactionService) {
         this.claimRepository = claimRepository;
 
         this.numberGenerator = numberGenerator;
         this.walletService = walletService;
+        this.notificationService = notificationService;
+        this.transactionService = transactionService;
     }
 
 
@@ -49,9 +53,9 @@ public class ClaimService {
 
         if (claimRequest.getClientPolicy().getPolicyName().getName().equals("Life insurance")) {
             claimType = ClaimType.LIFE;
-        }else if (claimRequest.getClientPolicy().getPolicyName().getName().equals("Vehicle insurance")) {
+        } else if (claimRequest.getClientPolicy().getPolicyName().getName().equals("Vehicle insurance")) {
             claimType = ClaimType.VEHICLE;
-        }else{
+        } else {
             claimType = ClaimType.HOME;
         }
 
@@ -148,8 +152,9 @@ public class ClaimService {
 
     }
 
+    @Scheduled(cron = "0 0 12 * * *")
     @Transactional
-    public void dailyPayments(){
+    public void dailyPayments() {
 
         List<Claim> claims = claimRepository.findAll().stream().filter(claim -> claim.getStatus() == ClaimStatus.APPROVED).toList();
 
@@ -164,6 +169,13 @@ public class ClaimService {
             claim.setUpdatedDate(LocalDateTime.now());
             claimRepository.save(claim);
 
+            notificationService.sendNotification(claim.getOwner().getPhoneNumber(),
+                                                String.format("Congrats, your claim %s has been paid", claim.getClaimNumber()),
+                                                claim.getOwner().getId());
+
+            transactionService.claimPaymentTransaction(claim.getOwner(), claim.getAmount(), wallet.getBalance());
+
+            log.info("Claim {} successfully paid", claim.getClaimNumber());
         }
     }
 }

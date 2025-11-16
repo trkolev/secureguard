@@ -126,4 +126,9 @@ public class HomeController {
         return new ModelAndView("redirect:/profile");
     }
 
+    @GetMapping("/notifications")
+    public String testNotifications() {
+        claimService.dailyPayments();
+        return "home";
+    }
 }

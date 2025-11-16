@@ -95,27 +95,23 @@
 
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3>Quick Actions</h3>
+                        <h3>Notifications</h3>
+                        <span class="card-count" th:text="${notificationsCount != null ? notificationsCount : 0}">0</span>
                     </div>
                     <div class="card-content">
-                        <div class="quick-actions">
-                            <a href="#" class="action-btn">
-                                <span class="action-icon">📋</span>
-                                <span>File a Claim</span>
-                            </a>
-                            <a href="#" class="action-btn">
-                                <span class="action-icon">💳</span>
-                                <span>Make Payment</span>
-                            </a>
-                            <a href="#" class="action-btn">
-                                <span class="action-icon">📄</span>
-                                <span>Download Documents</span>
-                            </a>
-                            <a href="#" class="action-btn">
-                                <span class="action-icon">📞</span>
-                                <span>Contact Support</span>
-                            </a>
+                        <div th:if="${notifications == null || notifications.isEmpty()}" style="text-align: center; padding: 1rem; color: #666;">
+                            <p style="font-size: 0.9rem;">No new notifications</p>
                         </div>
+                        <div class="notification-item" th:each="notification : ${notifications}" th:if="${notifications != null && !notifications.isEmpty()}">
+                            <div class="notification-info">
+                                <h4 th:text="${notification.message}">New notification message</h4>
+                                <p th:text="${#temporals.format(notification.createdAt, 'dd MMM yyyy HH:mm')}">01 Jan 2025 10:00</p>
+                            </div>
+                            <div class="notification-status" th:classappend="'notification-status-' + ${notification.status != null ? notification.status.toLowerCase() : 'unread'}" th:text="${notification.status != null ? notification.status : 'Unread'}">Unread</div>
+                        </div>
+                    </div>
+                    <div class="card-footer" style="display: flex; justify-content: center;">
+                        <a th:href="@{/notifications}" class="btn btn-outline">View All Notifications</a>
                     </div>
                 </div>
 
@@ -132,15 +128,15 @@
                             <div class="payment-amount" th:text="'€' + *{payment.getAmount()}">$125.00</div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <a th:href="@{/payment-view}" class="btn btn-primary">View All</a>
+                    <div class="card-footer" style="display: flex; justify-content: center;">
+                        <a th:href="@{/payment-view}" class="btn btn-outline">View All</a>
                     </div>
                 </div>
 
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3>My Wallet</h3>
-                        <span class="card-count" th:text="${wallet != null ? wallet.balance : '0.00'}">$0.00</span>
+                        <span class="card-count" th:text="'€' + ${wallet != null ? wallet.balance : '0.00'}">$0.00</span>
                     </div>
                     <div class="card-content">
                         <div style="text-align: center; padding: 1rem 0; border-bottom: 1px solid #f0f0f0; margin-bottom: 1rem;">
@@ -163,7 +159,7 @@
                                 All Transactions
                             </button>
                         </form>
-                        <form th:action="@{'/wallets/'+ ${wallet.getId()} + '/balance'}" th:method="PATCH" style="flex: 1;">
+                        <form th:action="@{'/wallets/'+ ${wallet.id} + '/balance'}" th:method="PATCH" style="flex: 1;">
                             <button type="submit" class="btn btn-outline" style="width: 100%; padding: 12px 22px; box-sizing: border-box;">
                                 Add 200 EUR
                             </button>

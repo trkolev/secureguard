@@ -1,6 +1,6 @@
 package com.project.ins.policy.service;
 
-import com.project.ins.client.NumberGenerator;
+import com.project.ins.numbergenerator.NumberGenerator;
 import com.project.ins.exception.PolicyException;
 import com.project.ins.policy.model.Policy;
 import com.project.ins.policy.model.PolicyStatus;
@@ -10,7 +10,6 @@ import com.project.ins.user.model.User;
 import com.project.ins.web.dto.PolicyRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

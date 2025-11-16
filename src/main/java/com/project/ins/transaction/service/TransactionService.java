@@ -90,4 +90,20 @@ public class TransactionService {
         return transactionRepository.save(transaction);
 
     }
+
+    public void claimPaymentTransaction(User owner, BigDecimal amount, BigDecimal balance) {
+
+        Transaction transaction = Transaction.builder()
+                .owner(owner)
+                .amount(amount)
+                .balanceLeft(balance)
+                .currency(Currency.getInstance("EUR").getCurrencyCode())
+                .status(TransactionStatus.SUCCESS)
+                .type(TransactionType.DEPOSIT)
+                .createdOn(LocalDateTime.now())
+                .description("Claim payment")
+                .build();
+
+        transactionRepository.save(transaction);
+    }
 }
