@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -142,4 +143,14 @@ public class HomeController {
         modelAndView.addObject("notifications", notifications);
         return modelAndView;
     }
+
+    @DeleteMapping("/notifications/delete-all")
+    public ModelAndView deleteNotifications(@AuthenticationPrincipal UserData userData) {
+
+        ModelAndView modelAndView = new ModelAndView("notification-view");
+        notificationService.deleteNotifications(userData.getId());
+        modelAndView.addObject("notifications", notificationService.getNotifications(userData.getId()));
+        return modelAndView;
+    }
+
 }

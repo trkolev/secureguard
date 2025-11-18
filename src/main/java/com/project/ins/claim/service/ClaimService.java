@@ -4,20 +4,13 @@ import com.project.ins.claim.model.Claim;
 import com.project.ins.claim.model.ClaimStatus;
 import com.project.ins.claim.model.ClaimType;
 import com.project.ins.claim.repository.ClaimRepository;
-import com.project.ins.notification.service.NotificationService;
 import com.project.ins.numbergenerator.NumberGenerator;
 import com.project.ins.exception.ClaimNotFoundException;
-import com.project.ins.transaction.model.Transaction;
-import com.project.ins.transaction.service.TransactionService;
 import com.project.ins.user.model.User;
-import com.project.ins.wallet.model.Wallet;
-import com.project.ins.wallet.service.WalletService;
 import com.project.ins.web.dto.ClaimLiquidationRequest;
 import com.project.ins.web.dto.ClaimRequest;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,7 +18,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,17 +25,11 @@ public class ClaimService {
 
     private final ClaimRepository claimRepository;
     private final NumberGenerator numberGenerator;
-    private final WalletService walletService;
-    private final NotificationService notificationService;
-    private final TransactionService transactionService;
 
-    public ClaimService(ClaimRepository claimRepository, NumberGenerator numberGenerator, WalletService walletService, NotificationService notificationService, TransactionService transactionService) {
+
+    public ClaimService(ClaimRepository claimRepository, NumberGenerator numberGenerator) {
         this.claimRepository = claimRepository;
-
         this.numberGenerator = numberGenerator;
-        this.walletService = walletService;
-        this.notificationService = notificationService;
-        this.transactionService = transactionService;
     }
 
 
@@ -118,7 +104,7 @@ public class ClaimService {
     }
 
     public List<Claim> findAll() {
-        return claimRepository.findAll().stream().sorted(Comparator.comparing(Claim::getCreatedDate)).toList();
+        return claimRepository.findAll().stream().sorted(Comparator.comparing(Claim::getCreatedDate).reversed()).toList();
     }
 
     public void approveClaim(UUID claimId, ClaimLiquidationRequest request, UUID userId) {
@@ -152,30 +138,11 @@ public class ClaimService {
 
     }
 
-    @Scheduled(cron = "0 0 12 * * *")
-    @Transactional
-    public void dailyPayments() {
+    public void save(Claim claim) {
+        claimRepository.save(claim);
+    }
 
-        List<Claim> claims = claimRepository.findAll().stream().filter(claim -> claim.getStatus() == ClaimStatus.APPROVED).toList();
-
-        for (Claim claim : claims) {
-
-            Wallet wallet = claim.getOwner().getWallet();
-            wallet.setBalance(wallet.getBalance().add(claim.getAmount()));
-            wallet.setUpdatedOn(LocalDateTime.now());
-            walletService.save(wallet);
-
-            claim.setStatus(ClaimStatus.PAID);
-            claim.setUpdatedDate(LocalDateTime.now());
-            claimRepository.save(claim);
-
-            notificationService.sendNotification(claim.getOwner().getPhoneNumber(),
-                                                String.format("Congrats, your claim %s has been paid", claim.getClaimNumber()),
-                                                claim.getOwner().getId());
-
-            transactionService.claimPaymentTransaction(claim.getOwner(), claim.getAmount(), wallet.getBalance());
-
-            log.info("Claim {} successfully paid", claim.getClaimNumber());
-        }
+    public List<Claim> findAllApproved() {
+        return claimRepository.findAll().stream().filter(claim -> claim.getStatus() == ClaimStatus.APPROVED).toList();
     }
 }

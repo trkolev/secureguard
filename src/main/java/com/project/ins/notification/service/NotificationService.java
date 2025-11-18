@@ -55,4 +55,7 @@ public class NotificationService {
         return notifications.getBody().stream().limit(3).toList();
     }
 
+    public void deleteNotifications(UUID userId) {
+        notificationClient.deleteSms(userId);
+    }
 }

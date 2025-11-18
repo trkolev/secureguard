@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard Insurance - Terms and Conditions</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>SecureGuard Insurance</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/home" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link">Logout</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="landing" style="background:none; padding-top: 4rem;">
+            <div class="landing-inner" style="max-width:900px; width:100%;">
+                <img src="/images/logo.png" alt="SecureGuard Insurance" class="brand-image" style="width:120px; filter: drop-shadow(0 8px 18px rgba(212,175,55,0.25)); animation:none;" />
+                <h1 style="margin-top: 0.5rem; color:#ffd700; font-size:1.75rem;">Terms and Conditions</h1>
+                <p style="color:#e9e0c2; font-size:1rem; margin-bottom: 2rem;">Please read the following terms carefully before creating your insurance policy</p>
+
+                <div style="background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); border: 1px solid rgba(212,175,55,0.15); border-radius: 14px; padding: 2rem; box-shadow: 0 8px 28px rgba(0,0,0,0.35);">
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="color: #ffd700; font-size: 1.3rem; margin-bottom: 1rem;">1. Policy Coverage</h2>
+                        <p style="color: #e9e0c2; line-height: 1.7; margin-bottom: 0.5rem;">
+                            Your insurance policy provides coverage as specified in your policy documents. Coverage begins on the policy start date after approval and continues until the policy end date, subject to timely premium payments.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="color: #ffd700; font-size: 1.3rem; margin-bottom: 1rem;">2. Premium Payments</h2>
+                        <p style="color: #e9e0c2; line-height: 1.7; margin-bottom: 0.5rem;">
+                            Monthly premium payments are due on the policy anniversary date each month. Failure to pay premiums may result in policy cancellation. Premium amounts are calculated based on your selected coverage amount and policy type.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="color: #ffd700; font-size: 1.3rem; margin-bottom: 1rem;">3. Policy Approval</h2>
+                        <p style="color: #e9e0c2; line-height: 1.7; margin-bottom: 0.5rem;">
+                            All policies are subject to approval by our underwriting team. We reserve the right to decline coverage based on our risk assessment criteria. You will be notified of the approval status within 5 business days.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="color: #ffd700; font-size: 1.3rem; margin-bottom: 1rem;">4. Cancellation</h2>
+                        <p style="color: #e9e0c2; line-height: 1.7; margin-bottom: 0.5rem;">
+                            You may cancel your policy at any time by providing 30 days written notice. Refunds for unused premiums will be calculated on a pro-rata basis, minus any applicable cancellation fees as outlined in your policy documents.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="color: #ffd700; font-size: 1.3rem; margin-bottom: 1rem;">5. Claims Process</h2>
+                        <p style="color: #e9e0c2; line-height: 1.7; margin-bottom: 0.5rem;">
+                            Claims must be submitted through our online portal within 30 days of the incident. All claims are subject to investigation and approval. Approved claims will be processed according to the terms specified in your policy coverage.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="color: #ffd700; font-size: 1.3rem; margin-bottom: 1rem;">6. Data Protection</h2>
+                        <p style="color: #e9e0c2; line-height: 1.7; margin-bottom: 0.5rem;">
+                            Your personal information is protected in accordance with applicable data protection laws. We use your data solely for policy administration, claims processing, and customer service purposes.
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(212,175,55,0.2);">
+                        <p style="color: #c8bd99; font-size: 0.9rem; line-height: 1.6;">
+                            By creating a policy with SecureGuard Insurance, you acknowledge that you have read, understood, and agree to be bound by these terms and conditions. If you have any questions, please contact our customer service team before proceeding.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 2rem; text-align: center;">
+                    <a href="/policy" class="btn btn-primary btn-large">Back to Policy Creation</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SecureGuard Insurance</h3>
+                    <p>Protecting what matters most to you since 2025.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/home">Dashboard</a></li>
+                        <li><a href="/profile">Profile</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Phone: (555) 123-4567</p>
+                    <p>Email: info@secureguard.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SecureGuard Insurance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+            document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }));
+        }
+    </script>
+</body>
+</html>
+

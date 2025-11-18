@@ -4,6 +4,7 @@ import com.project.ins.notification.client.dto.Notification;
 import com.project.ins.notification.client.dto.SmsSendRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,5 +20,8 @@ public interface NotificationClient {
 
     @GetMapping("sms")
     ResponseEntity<List<Notification>> getNotifications(@RequestParam("userId")UUID ussrId);
+
+    @DeleteMapping("sms")
+    String deleteSms(@RequestParam("userId")UUID ussrId);
 
 }

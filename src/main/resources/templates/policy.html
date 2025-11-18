@@ -85,9 +85,9 @@
                             <p style="color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem;" th:if="${#fields.hasErrors('coverageAmount')}" th:errors="*{coverageAmount}">Error</p>
                         </div>
 
-                        <!-- Premium Amount (Calculated as 6% of Coverage) -->
+                        <!-- Premium Amount (Calculated based on policy type) -->
                         <div class="form-group">
-                            <label for="premiumAmount" style="display: block; margin-bottom: 0.5rem; color: #f2e7bf; font-weight: 700;">Monthly Premium (6% of Coverage)</label>
+                            <label for="premiumAmount" style="display: block; margin-bottom: 0.5rem; color: #f2e7bf; font-weight: 700;">Monthly Premium</label>
                             <input type="number" id="premiumAmount" name="premiumAmount" readonly th:field="*{premiumAmount}" step="0.01" style="width: 100%; padding: 0.8rem; background: #0e0e0f; color: #c8bd99; border: 2px solid rgba(212, 175, 55, 0.18); border-radius: 10px; font-size: 1rem; cursor: not-allowed;" placeholder="Auto-calculated">
                             <p style="color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem;" th:if="${#fields.hasErrors('premiumAmount')}" th:errors="*{premiumAmount}">Error</p>
                         </div>
@@ -118,7 +118,7 @@
                     <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 8px;">
                         <label style="display: flex; align-items: center; color: #e9e0c2; cursor: pointer;">
                             <input type="checkbox" id="agreeTerms" name="agreeTerms" required style="width: 18px; height: 18px; margin-right: 0.75rem; cursor: pointer;">
-                            <span style="font-size: 0.95rem;">I agree to the <a href="#" style="color: #ffd700; text-decoration: underline;">terms and conditions</a> of this insurance policy</span>
+                            <span style="font-size: 0.95rem;">I agree to the <a href="/terms" target="_blank" style="color: #ffd700; text-decoration: underline;">terms and conditions</a> of this insurance policy</span>
                         </label>
                     </div>
 
@@ -194,23 +194,47 @@
             }, 5000);
         }
 
-        // Auto-calculate Premium Amount as 6% of Coverage Amount
+        // Auto-calculate Premium Amount based on policy type
         const coverageAmountInput = document.getElementById('coverageAmount');
         const premiumAmountInput = document.getElementById('premiumAmount');
+        const policyNameSelect = document.getElementById('policyName');
         
-        if (coverageAmountInput && premiumAmountInput) {
+        // Get premium coefficient based on policy type
+        function getPremiumCoefficient(policyType) {
+            switch(policyType) {
+                case 'PERSON': // Life Insurance
+                    return 0.005; // 0.5%
+                case 'VEHICLE': // Vehicle Insurance
+                    return 0.06; // 6%
+                case 'PROPERTY': // Property Insurance
+                    return 0.01; // 1%
+                default:
+                    return 0.06; // Default to 6%
+            }
+        }
+        
+        // Calculate premium based on coverage amount and policy type
+        function calculatePremium() {
+            if (coverageAmountInput && premiumAmountInput && policyNameSelect) {
+                const coverageValue = parseFloat(coverageAmountInput.value) || 0;
+                const policyType = policyNameSelect.value;
+                const coefficient = getPremiumCoefficient(policyType);
+                const premiumValue = (coverageValue * coefficient).toFixed(2);
+                premiumAmountInput.value = premiumValue;
+            }
+        }
+        
+        if (coverageAmountInput && premiumAmountInput && policyNameSelect) {
             // Calculate on page load if coverage amount has a value
             if (coverageAmountInput.value) {
-                const premium = (parseFloat(coverageAmountInput.value) * 0.06).toFixed(2);
-                premiumAmountInput.value = premium;
+                calculatePremium();
             }
 
             // Calculate when coverage amount changes
-            coverageAmountInput.addEventListener('input', function() {
-                const coverageValue = parseFloat(this.value) || 0;
-                const premiumValue = (coverageValue * 0.06).toFixed(2);
-                premiumAmountInput.value = premiumValue;
-            });
+            coverageAmountInput.addEventListener('input', calculatePremium);
+            
+            // Calculate when policy type changes
+            policyNameSelect.addEventListener('change', calculatePremium);
         }
 
         // Update date input colors when focused
