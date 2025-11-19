@@ -6,6 +6,8 @@ import com.project.ins.notification.client.dto.SmsSendRequest;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public class NotificationService {
         this.notificationClient = notificationClient;
     }
 
+    @CacheEvict(value = "notifications", key = "#senderId")
     public void sendNotification(String phoneNumber, String message, UUID senderId) {
 
         SmsSendRequest smsSendRequest = SmsSendRequest.builder()
@@ -39,22 +42,26 @@ public class NotificationService {
 
     }
 
+    @Cacheable(value = "notifications", key = "#userId")
     public List<Notification> getNotifications(UUID userId) {
 
         ResponseEntity<List<Notification>> notifications = notificationClient.getNotifications(userId);
-        return notifications.getBody();
+        return notifications.getBody() != null ? notifications.getBody() : List.of();
     }
 
+    @Cacheable(value = "notifications", key = "#userId")
     public List<Notification> getNotificationsLimit(UUID userId) {
 
         ResponseEntity<List<Notification>> notifications = notificationClient.getNotifications(userId);
-
-        if(notifications.getBody().isEmpty()){
-            return notifications.getBody();
+        List<Notification> body = notifications.getBody();
+        
+        if(body == null || body.isEmpty()){
+            return body != null ? body : List.of();
         }
-        return notifications.getBody().stream().limit(3).toList();
+        return body.stream().limit(3).toList();
     }
 
+    @CacheEvict(value = "notifications", key = "#userId")
     public void deleteNotifications(UUID userId) {
         notificationClient.deleteSms(userId);
     }
