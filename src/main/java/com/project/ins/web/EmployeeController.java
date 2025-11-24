@@ -40,7 +40,7 @@ public class EmployeeController {
     @PatchMapping("/employee/claims/{id}/approve")
     public String approveClaim(@PathVariable UUID id, ClaimLiquidationRequest request, @AuthenticationPrincipal UserData userData, RedirectAttributes redirectAttributes) {
 
-        claimService.approveClaim(id, request, userData.getId());
+        claimService.approveClaim(id, request);
         redirectAttributes.addFlashAttribute("successMessage", "Claim approved successfully");
 
         return "redirect:/employee";

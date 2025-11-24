@@ -9,7 +9,6 @@ import com.project.ins.exception.ClaimNotFoundException;
 import com.project.ins.user.model.User;
 import com.project.ins.web.dto.ClaimLiquidationRequest;
 import com.project.ins.web.dto.ClaimRequest;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,7 @@ public class ClaimService {
     }
 
 
-    public Claim create(@Valid ClaimRequest claimRequest, User user) {
+    public Claim create(ClaimRequest claimRequest, User user) {
 
         ClaimType claimType;
 
@@ -107,7 +106,7 @@ public class ClaimService {
         return claimRepository.findAll().stream().sorted(Comparator.comparing(Claim::getCreatedDate).reversed()).toList();
     }
 
-    public void approveClaim(UUID claimId, ClaimLiquidationRequest request, UUID userId) {
+    public void approveClaim(UUID claimId, ClaimLiquidationRequest request) {
 
         Optional<Claim> optionalClaim = claimRepository.findById(claimId);
         if (optionalClaim.isEmpty()) {
