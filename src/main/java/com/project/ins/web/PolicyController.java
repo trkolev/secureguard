@@ -59,7 +59,7 @@ public class PolicyController {
         }
 
         User user = userService.findById(userData.getId());
-        policyService.createPolicy(policyRequest, userData, user);
+        policyService.createPolicy(policyRequest, user);
         Transaction transaction = walletService.reduceAmount(policyRequest.getPremiumAmount(), user);
 
         if (transaction.getStatus().equals(TransactionStatus.SUCCESS)) {

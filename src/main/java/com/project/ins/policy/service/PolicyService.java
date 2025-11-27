@@ -5,10 +5,8 @@ import com.project.ins.exception.PolicyException;
 import com.project.ins.policy.model.Policy;
 import com.project.ins.policy.model.PolicyStatus;
 import com.project.ins.policy.repository.PolicyRepository;
-import com.project.ins.security.UserData;
 import com.project.ins.user.model.User;
 import com.project.ins.web.dto.PolicyRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +31,7 @@ public class PolicyService {
     }
 
 
-    public void createPolicy(@Valid PolicyRequest policyRequest, UserData userData, User user) {
+    public void createPolicy(PolicyRequest policyRequest, User user) {
 
         if(user.getWallet().getBalance().compareTo(policyRequest.getPremiumAmount()) >= 0) {
 
