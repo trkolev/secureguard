@@ -16,11 +16,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AdminController.class)
 public class AdminControllerApiTest {
@@ -32,7 +32,7 @@ public class AdminControllerApiTest {
     private MockMvc mockMvc;
 
     @Test
-    void adminController_shouldReturn200OkIfUserIsAdmin() throws Exception {
+    void getAdminPanel_shouldReturn200OkIfUserIsAdmin() throws Exception {
 
         UUID userId = UUID.randomUUID();
         UserDetails authentication = new UserData(userId, "adminUser", "adminPassword", UserRole.ADMIN, true);
@@ -76,5 +76,40 @@ public class AdminControllerApiTest {
         mockMvc.perform(request)
                 .andExpect(view().name("admin"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void patchRequestToUpdateRole_shouldReturn3xxAndRedirectToAdmin() throws Exception {
+        UUID userId = UUID.randomUUID();
+        UserDetails authentication = new UserData(userId, "adminUser", "adminPassword", UserRole.ADMIN, true);
+
+        doNothing().when(userService).updateRole(userId, "USER");
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.patch("/admin/users/{id}/role", userId)
+                .param("role", "USER")
+                .with(user(authentication))
+                .with(csrf());
+
+        mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin"));
+    }
+
+    @Test
+    void patchRequestToDisableShouldReturn() throws Exception {
+        UUID userId = UUID.randomUUID();
+        UserDetails authentication = new UserData(userId, "adminUser", "adminPassword", UserRole.ADMIN, true);
+
+        doNothing().when(userService).updateStatus(userId, "enabled");
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.patch("/admin/users/{id}/disable", userId)
+                .param("disable", "true")
+                .with(user(authentication))
+                .with(csrf());
+
+        mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin"));
+
     }
 }

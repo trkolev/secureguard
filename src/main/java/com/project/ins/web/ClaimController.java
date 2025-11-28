@@ -31,9 +31,8 @@ public class ClaimController {
     private final ClaimService claimService;
     private final UserService userService;
 
-    public ClaimController(PolicyService policyService, ClaimRepository claimRepository, ClaimService claimService, UserService userService) {
+    public ClaimController(PolicyService policyService, ClaimService claimService, UserService userService) {
         this.policyService = policyService;
-
         this.claimService = claimService;
         this.userService = userService;
     }
