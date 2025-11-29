@@ -23,7 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.UUID;
 
-
 @Controller
 public class ClaimController {
 
@@ -39,13 +38,11 @@ public class ClaimController {
 
     @GetMapping("/claims")
     public ModelAndView createClaim(@AuthenticationPrincipal UserData userData) {
-
         List<Policy> policies = policyService.getAllByUserId(userData.getId());
 
         ModelAndView modelAndView = new ModelAndView("claim");
         modelAndView.addObject("claimRequest", new ClaimRequest());
         modelAndView.addObject("policies", policies);
-
 
         return modelAndView;
     }
@@ -55,7 +52,6 @@ public class ClaimController {
                                      BindingResult bindingResult,
                                      @AuthenticationPrincipal UserData userData,
                                      RedirectAttributes redirectAttributes) {
-
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("claimRequest", claimRequest);
             return new ModelAndView("claim");
@@ -70,7 +66,6 @@ public class ClaimController {
 
     @GetMapping("/claims/all")
     public ModelAndView getAllClaims(@AuthenticationPrincipal UserData userData) {
-
         ModelAndView modelAndView = new ModelAndView("claim-view");
         List<Claim> claims = claimService.findAllByOwnerId(userData.getId());
         modelAndView.addObject("claims", claims);
@@ -80,11 +75,9 @@ public class ClaimController {
 
     @PatchMapping("/claims/{id}/cancel")
     public String cancelClaim(@AuthenticationPrincipal UserData userData, @PathVariable UUID id, RedirectAttributes redirectAttributes) {
-
         claimService.cancel(id);
         redirectAttributes.addFlashAttribute("successMessage", "Claim canceled successfully");
 
         return "redirect:/claims/all";
     }
-
 }

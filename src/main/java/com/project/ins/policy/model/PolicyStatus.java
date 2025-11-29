@@ -9,7 +9,6 @@ public enum PolicyStatus {
 
     private final String status;
 
-
     PolicyStatus(String status) {
         this.status = status;
     }

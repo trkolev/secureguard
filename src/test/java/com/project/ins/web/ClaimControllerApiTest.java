@@ -23,11 +23,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -115,6 +115,23 @@ public class ClaimControllerApiTest {
                 .andExpect(redirectedUrl("/claims"));
 
         verify(claimService).create(any(), any(User.class));
+    }
+
+    @Test
+    void postRequestToCreateClaim_shouldReturnClaimViewWhenValidationFails() throws Exception {
+        UUID userId = UUID.randomUUID();
+        UserDetails authentication = new UserData(userId, "testUser", "testPassword", UserRole.USER, true);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/claims")
+                .param("incidentDate", LocalDateTime.now().toString())
+                .with(user(authentication))
+                .with(csrf());
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(view().name("claim"));
+
+        verify(claimService, never()).create(any(), any());
     }
 
 }

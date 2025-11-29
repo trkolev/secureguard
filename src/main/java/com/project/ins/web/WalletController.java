@@ -25,7 +25,6 @@ public class WalletController {
 
     @PatchMapping("/wallets/{id}/balance")
     public String addBalance(@PathVariable UUID id, @AuthenticationPrincipal UserData userData, RedirectAttributes redirectAttributes) {
-
         User user = userService.findById(userData.getId());
         walletService.topUp(user);
 

@@ -27,8 +27,6 @@ public class EmployeeController {
 
     @GetMapping("/employee")
     public ModelAndView getEmployee() {
-
-
         List<Claim> claims = claimService.findAll();
         ModelAndView modelAndView = new ModelAndView("employee");
         modelAndView.addObject("claims", claims);
@@ -39,7 +37,6 @@ public class EmployeeController {
 
     @PatchMapping("/employee/claims/{id}/approve")
     public String approveClaim(@PathVariable UUID id, ClaimLiquidationRequest request, @AuthenticationPrincipal UserData userData, RedirectAttributes redirectAttributes) {
-
         claimService.approveClaim(id, request);
         redirectAttributes.addFlashAttribute("successMessage", "Claim approved successfully");
 
@@ -48,9 +45,7 @@ public class EmployeeController {
 
     @PatchMapping("/employee/claims/{id}/decline")
     public String declineClaim(@PathVariable UUID id, ClaimLiquidationRequest request, RedirectAttributes redirectAttributes) {
-
         claimService.declineClaim(id, request);
-
         redirectAttributes.addFlashAttribute("successMessage", "Claim declined successfully");
 
         return "redirect:/employee";

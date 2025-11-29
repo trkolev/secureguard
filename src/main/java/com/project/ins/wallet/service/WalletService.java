@@ -39,7 +39,6 @@ public class WalletService {
     }
 
     public void topUp(User user) {
-
         Wallet wallet = walletRepository.findByOwnerId(user.getId());
         wallet.setBalance(wallet.getBalance().add(BigDecimal.valueOf(200.00)));
         walletRepository.save(wallet);
@@ -48,22 +47,18 @@ public class WalletService {
     }
 
     public Transaction reduceAmount(BigDecimal premiumAmount, User user) {
-
         Wallet wallet = walletRepository.findByOwnerId(user.getId());
         if (wallet.getBalance().compareTo(premiumAmount) >= 0) {
             wallet.setBalance(wallet.getBalance().subtract(premiumAmount));
             walletRepository.save(wallet);
             return transactionService.createWithdrawalTransaction(user, wallet.getBalance(), premiumAmount);
-        }else{
+        } else {
             return transactionService.createFailTransaction(user, wallet.getBalance(), premiumAmount, "insufficient balance");
         }
-
     }
 
     public Wallet findByOwnerId(UUID userId) {
-
         return walletRepository.findByOwnerId(userId);
-
     }
 
     public void save(Wallet wallet) {

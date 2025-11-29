@@ -49,10 +49,7 @@ public class PolicyController {
     public ModelAndView createPolicy(@Valid PolicyRequest policyRequest,
                                      BindingResult bindingResult,
                                      @AuthenticationPrincipal UserData userData,
-                                     RedirectAttributes redirectAttributes
-                                    ) {
-        // Handle policy creation
-
+                                     RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("policyRequest", policyRequest);
             return new ModelAndView("redirect:/policy/create");
@@ -63,11 +60,8 @@ public class PolicyController {
         Transaction transaction = walletService.reduceAmount(policyRequest.getPremiumAmount(), user);
 
         if (transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
-
             redirectAttributes.addFlashAttribute("successMessage", "Policy created successfully");
-
-        }else{
-
+        } else {
             redirectAttributes.addFlashAttribute("failMessage", "Policy creation failed");
         }
 
@@ -76,20 +70,17 @@ public class PolicyController {
 
     @GetMapping("/policy-view")
     public ModelAndView listPolicies(@AuthenticationPrincipal UserData userData) {
-
         List<Policy> userPolicy = policyService.getAllByUserId(userData.getId());
         ModelAndView modelAndView = new ModelAndView("policy-view");
         modelAndView.addObject("policies", userPolicy);
-
         return modelAndView;
     }
 
     @PatchMapping("policy/{id}/cancel")
     public String cancelPolicy(@PathVariable("id") UUID id, RedirectAttributes redirectAttributes) {
-
-       policyService.cancelPolicy(id);
+        policyService.cancelPolicy(id);
         redirectAttributes.addFlashAttribute("successMessage", "Policy cancelled successfully");
 
-       return "redirect:/policy-view";
+        return "redirect:/policy-view";
     }
 }

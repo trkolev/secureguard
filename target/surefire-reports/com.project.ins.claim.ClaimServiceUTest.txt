@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.project.ins.claim.ClaimServiceUTest
+-------------------------------------------------------------------------------
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.068 s -- in com.project.ins.claim.ClaimServiceUTest

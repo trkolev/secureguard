@@ -250,25 +250,25 @@ public class ClaimServiceUTest {
     void findClaimsThisYear_shouldReturnOnlyClaimsFromCurrentYear() {
         UUID ownerId = UUID.randomUUID();
         int currentYear = LocalDateTime.now().getYear();
-        
+
         Claim claimThisYear1 = Claim.builder()
                 .createdDate(LocalDateTime.of(currentYear, 6, 15, 10, 0))
                 .build();
-        
+
         Claim claimThisYear2 = Claim.builder()
                 .createdDate(LocalDateTime.of(currentYear, 11, 20, 14, 30))
                 .build();
-        
+
         Claim claimLastYear = Claim.builder()
                 .createdDate(LocalDateTime.of(currentYear - 1, 12, 31, 23, 59))
                 .build();
-        
+
         List<Claim> allClaims = Arrays.asList(claimThisYear1, claimLastYear, claimThisYear2);
-        
+
         when(claimRepository.findAllByOwner_Id(ownerId)).thenReturn(allClaims);
-        
+
         int result = claimService.findClaimsThisYear(ownerId);
-        
+
         assertEquals(2, result);
     }
 
@@ -276,32 +276,32 @@ public class ClaimServiceUTest {
     void findClaimsThisYear_shouldReturnZeroWhenNoClaimsFromCurrentYear() {
         UUID ownerId = UUID.randomUUID();
         int currentYear = LocalDateTime.now().getYear();
-        
+
         Claim claimLastYear = Claim.builder()
                 .createdDate(LocalDateTime.of(currentYear - 1, 6, 15, 10, 0))
                 .build();
-        
+
         Claim claimTwoYearsAgo = Claim.builder()
                 .createdDate(LocalDateTime.of(currentYear - 2, 3, 10, 8, 0))
                 .build();
-        
+
         List<Claim> allClaims = Arrays.asList(claimLastYear, claimTwoYearsAgo);
-        
+
         when(claimRepository.findAllByOwner_Id(ownerId)).thenReturn(allClaims);
-        
+
         int result = claimService.findClaimsThisYear(ownerId);
-        
+
         assertEquals(0, result);
     }
 
     @Test
     void findClaimsThisYear_shouldReturnZeroWhenNoClaimsExist() {
         UUID ownerId = UUID.randomUUID();
-        
+
         when(claimRepository.findAllByOwner_Id(ownerId)).thenReturn(List.of());
-        
+
         int result = claimService.findClaimsThisYear(ownerId);
-        
+
         assertEquals(0, result);
     }
 
@@ -309,29 +309,29 @@ public class ClaimServiceUTest {
     void findAllByOwnerIdLimit_shouldReturnLimitedAndSortedClaims() {
         UUID ownerId = UUID.randomUUID();
         int currentYear = LocalDateTime.now().getYear();
-        
+
         Claim claim1 = Claim.builder()
                 .createdDate(LocalDateTime.of(currentYear, 3, 15, 10, 0))
                 .build();
-        
+
         Claim claim2 = Claim.builder()
                 .createdDate(LocalDateTime.of(currentYear, 1, 10, 8, 0))
                 .build();
-        
+
         Claim claim3 = Claim.builder()
                 .createdDate(LocalDateTime.of(currentYear, 6, 20, 14, 0))
                 .build();
-        
+
         Claim claim4 = Claim.builder()
                 .createdDate(LocalDateTime.of(currentYear, 8, 5, 12, 0))
                 .build();
-        
+
         List<Claim> allClaims = Arrays.asList(claim1, claim2, claim3, claim4);
-        
+
         when(claimRepository.findAllByOwner_Id(ownerId)).thenReturn(allClaims);
-        
+
         List<Claim> result = claimService.findAllByOwnerIdLimit(ownerId);
-        
+
         assertEquals(3, result.size());
         assertEquals(claim2.getCreatedDate(), result.get(0).getCreatedDate());
         assertEquals(claim1.getCreatedDate(), result.get(1).getCreatedDate());

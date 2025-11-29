@@ -26,7 +26,6 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
     public ModelAndView getAdminPanel() {
-
         List<User> users = userService.findAll();
 
         ModelAndView modelAndView = new ModelAndView("admin");
@@ -35,10 +34,8 @@ public class AdminController {
         return modelAndView;
     }
 
-
     @PatchMapping("/admin/users/{id}/role")
     public String updateRole(@PathVariable("id") UUID id, @RequestParam("role") String role, RedirectAttributes redirectAttributes) {
-
         userService.updateRole(id, role);
         redirectAttributes.addFlashAttribute("successMessage", "User role has been updated successfully");
 
@@ -47,10 +44,8 @@ public class AdminController {
 
     @PatchMapping("/admin/users/{id}/{status}")
     public String disable(@PathVariable("id") UUID id, @PathVariable("status") String status, RedirectAttributes redirectAttributes) {
-
         userService.updateStatus(id, status);
-
-            redirectAttributes.addFlashAttribute("successMessage", "User staus has been updated successfully");
+        redirectAttributes.addFlashAttribute("successMessage", "User staus has been updated successfully");
 
         return "redirect:/admin";
     }

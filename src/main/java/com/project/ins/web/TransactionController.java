@@ -19,10 +19,8 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-
     @GetMapping("/transactions")
     public ModelAndView transactions(@AuthenticationPrincipal UserData userData) {
-
         List<Transaction> transactions = transactionService.findAllByUserId(userData.getId());
 
         ModelAndView modelAndView = new ModelAndView("transaction-view");

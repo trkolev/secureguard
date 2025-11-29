@@ -160,7 +160,6 @@ public class PolicyServiceUTest {
         assertThrows(PolicyException.class, () -> policyService.cancelPolicy(uuid));
     }
 
-
     @Test
     void cancelPolicy_shouldSetStatusToCancelled() {
         UUID uuid = UUID.randomUUID();

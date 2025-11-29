@@ -1,6 +1,5 @@
 package com.project.ins.web.dto;
 
-
 import lombok.*;
 
 @Builder

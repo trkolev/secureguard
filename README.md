@@ -104,7 +104,7 @@ A comprehensive web-based insurance management application built with Spring Boo
 - **Payment Processing**
   - Premium payments for policies
   - Claim payment processing
-  - Scheduled daily payments for approved claims (runs at 21:00 daily)
+  - Scheduled daily payments for approved claims (runs at 13:47 daily)
 
 ### Dashboard & Analytics
 - **User Dashboard**
@@ -260,7 +260,7 @@ A comprehensive web-based insurance management application built with Spring Boo
 - Password encoding (BCrypt)
 
 ### Scheduled Tasks
-- **Daily Payments**: Runs daily at 21:00 (9:00 PM)
+- **Daily Payments**: Runs daily at 13:47 (1:47 PM)
   - Processes all approved claims
   - Transfers claim amounts to user wallets
   - Sends SMS notifications
@@ -290,8 +290,14 @@ src/
 │       └── application.properties
 └── test/
     └── java/com/project/ins/
-        ├── claim/          # Claim service tests
-        └── user/           # User service tests
+        ├── Integrationtest/   # Integration tests
+        ├── claim/             # Claim service tests
+        ├── notification/      # Notification service tests
+        ├── policy/            # Policy service tests
+        ├── transaction/       # Transaction service tests
+        ├── user/              # User service tests
+        ├── wallet/            # Wallet service tests
+        └── web/               # Controller API tests
 ```
 
 ## 🔐 User Roles
@@ -345,8 +351,10 @@ src/
 ### Admin/Employee Endpoints
 - `GET /admin` - Admin dashboard
 - `PATCH /admin/user/{id}/role` - Update user role
-- `PATCH /admin/user/{id}/status` - Update user status
+- `PATCH /admin/user/{id}/{status}` - Update user status (activate/deactivate)
 - `GET /employee` - Employee dashboard
+- `PATCH /employee/claims/{id}/approve` - Approve claim
+- `PATCH /employee/claims/{id}/decline` - Decline claim
 
 ### Wallet & Transaction Endpoints
 - `GET /transactions` - View transactions
@@ -359,14 +367,40 @@ src/
 
 ## 🧪 Testing
 
-The project includes comprehensive unit tests:
-- User service tests (authentication, registration, profile management)
-- Claim service tests (creation, processing, filtering)
-- Service layer unit tests with Mockito
+The project includes comprehensive unit and integration tests:
+
+### Unit Tests
+- **User Service Tests** (`UserServiceUTest`) - Authentication, registration, profile management
+- **Claim Service Tests** (`ClaimServiceUTest`) - Claim creation, processing, filtering
+- **Policy Service Tests** (`PolicyServiceUTest`) - Policy creation, cancellation, coverage calculations
+- **Transaction Service Tests** (`TransactionServiceUTest`) - Transaction creation and history
+- **Wallet Service Tests** (`WalletServiceUTest`) - Wallet operations, top-up, balance management
+- **Notification Service Tests** (`NotificationServiceUTest`) - Notification sending and retrieval
+
+### Integration Tests
+- **Register Integration Test** (`RegisterITest`) - End-to-end user registration flow
+
+### Controller API Tests (WebMvcTest)
+- **Admin Controller Tests** (`AdminControllerApiTest`)
+- **Claim Controller Tests** (`ClaimControllerApiTest`)
+- **Employee Controller Tests** (`EmployeeControllerApiTest`)
+- **Home Controller Tests** (`HomeControllerApiTest`)
+- **Index Controller Tests** (`IndexControllerApiTest`)
+- **Payment Controller Tests** (`PaymentControllerApiTest`)
+- **Policy Controller Tests** (`PolicyControllerApiTest`)
+- **Transaction Controller Tests** (`TransactionControllerApiTest`)
+- **Wallet Controller Tests** (`WalletControllerApiTest`)
+
+**Total Test Coverage**: 89 tests covering all major components
 
 Run tests:
 ```bash
 mvn test
+```
+
+Or with Java 17 explicitly:
+```bash
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk mvn test
 ```
 
 ## 📊 Key Features Summary
@@ -381,14 +415,6 @@ mvn test
 ✅ Role-based access control  
 ✅ Responsive web interface  
 ✅ Caching for performance optimization  
-
-## 🔄 Scheduled Tasks
-
-- **Daily Payment Processing**: Automatically processes approved claims daily at 21:00
-  - Transfers claim amounts to user wallets
-  - Updates claim status to PAID
-  - Sends SMS notifications
-  - Creates transaction records
 
 ## 📞 Support
 

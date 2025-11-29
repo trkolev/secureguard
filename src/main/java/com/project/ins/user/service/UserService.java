@@ -41,13 +41,10 @@ public class UserService implements UserDetailsService {
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 
-
         return new UserData(user.getId(), user.getUsername(), user.getPassword(), user.getRole(), user.isActive());
     }
 
-
     public void createUser(RegisterRequest registerRequest) {
-
         Optional<User> byUsername = userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail());
         if (byUsername.isPresent()) {
             throw new UserOrEmailAlreadyExistException("Username or email already exists");
@@ -58,7 +55,7 @@ public class UserService implements UserDetailsService {
         }
 
         UserRole role = UserRole.USER;
-        if(findAll().isEmpty()){
+        if (findAll().isEmpty()) {
             role = UserRole.ADMIN;
         }
 
@@ -67,6 +64,7 @@ public class UserService implements UserDetailsService {
                 .firstName(registerRequest.getFirstName())
                 .lastName(registerRequest.getLastName())
                 .address(registerRequest.getAddress())
+                .phoneNumber(registerRequest.getPhoneNumber())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .role(role)
@@ -80,15 +78,12 @@ public class UserService implements UserDetailsService {
         log.info("User {} successfully created", user.getUsername());
     }
 
-
     public User findById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
 
     public UpdateUserDto mapUserToUpdateDto(User user) {
-
         return new UpdateUserDto(user.getUsername(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhoneNumber(), user.getEmail());
-
     }
 
     public List<User> findAll() {
@@ -96,7 +91,6 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateRole(UUID id, String role) {
-
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isEmpty()) {
@@ -106,11 +100,9 @@ public class UserService implements UserDetailsService {
         User user = optionalUser.get();
         user.setRole(UserRole.valueOf(role));
         userRepository.save(user);
-
     }
 
     public void updateStatus(UUID id, String status) {
-
         Optional<User> userCheck = userRepository.findById(id);
 
         if (userCheck.isEmpty()) {
@@ -120,27 +112,22 @@ public class UserService implements UserDetailsService {
         User user = userCheck.get();
         user.setActive(!status.equalsIgnoreCase("disable"));
         userRepository.save(user);
-
     }
 
-
     public void changePassword(User user, @Valid PasswordChangeRequest passwordChange) {
-
-        if(!passwordEncoder.matches(passwordChange.getCurrentPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(passwordChange.getCurrentPassword(), user.getPassword())) {
             throw new WrongPasswordException();
         }
 
-        if(!passwordChange.getNewPassword().equals(passwordChange.getConfirmPassword())) {
+        if (!passwordChange.getNewPassword().equals(passwordChange.getConfirmPassword())) {
             throw new PasswordDifferException();
         }
 
         user.setPassword(passwordEncoder.encode(passwordChange.getNewPassword()));
         userRepository.save(user);
-
     }
 
     public void updateUserInformation(@Valid UpdateUserDto updateUserDto, User user) {
-
         user.setFirstName(updateUserDto.getFirstName());
         user.setLastName(updateUserDto.getLastName());
         user.setAddress(updateUserDto.getAddress());
@@ -148,6 +135,5 @@ public class UserService implements UserDetailsService {
         user.setPhoneNumber(updateUserDto.getPhoneNumber());
 
         userRepository.save(user);
-
     }
 }

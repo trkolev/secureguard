@@ -1,0 +1,17 @@
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/InsuranceCompanyApplicationTests.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/Integrationtest/RegisterITest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/claim/ClaimServiceUTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/notification/NotificationServiceUTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/policy/PolicyServiceUTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/transaction/TransactionServiceUTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/user/UserServiceUTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/wallet/WalletServiceUTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/web/AdminControllerApiTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/web/ClaimControllerApiTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/web/EmployeeControllerApiTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/web/HomeControllerApiTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/web/IndexControllerApiTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/web/PaymentControllerApiTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/web/PolicyControllerApiTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/web/TransactionControllerApiTest.java
+/home/glarusbse/Softuni/ins/src/test/java/com/project/ins/web/WalletControllerApiTest.java

@@ -47,7 +47,6 @@ public class HomeController {
 
     @GetMapping("/home")
     public ModelAndView home(@AuthenticationPrincipal UserData userData) {
-
         User user = userService.findById(userData.getId());
         List<Policy> userPolicy = policyService.getAllByOwnerIdLimited(userData.getId());
         int userPolicySize = policyService.getAllByUserId(userData.getId()).size();
@@ -82,9 +81,7 @@ public class HomeController {
 
     @GetMapping("/profile")
     public ModelAndView profile(@AuthenticationPrincipal UserData userData) {
-
         User user = userService.findById(userData.getId());
-
         ModelAndView modelAndView = new ModelAndView("profile");
         UpdateUserDto updateUserDto = userService.mapUserToUpdateDto(user);
         modelAndView.addObject("user", updateUserDto);
@@ -98,7 +95,6 @@ public class HomeController {
                                        BindingResult bindingResult,
                                        @AuthenticationPrincipal UserData userData,
                                        RedirectAttributes redirectAttributes) {
-
         User user = userService.findById(userData.getId());
 
         if (bindingResult.hasErrors()) {
@@ -115,17 +111,16 @@ public class HomeController {
     }
 
     @PatchMapping("/profile/update")
-    public ModelAndView updateUserInformation(@Valid @ModelAttribute("user") UpdateUserDto updateUserDto
-            ,BindingResult bindingResult
-            ,@AuthenticationPrincipal UserData userData
-            ,RedirectAttributes redirectAttributes) {
-
+    public ModelAndView updateUserInformation(@Valid @ModelAttribute("user") UpdateUserDto updateUserDto,
+                                              BindingResult bindingResult,
+                                              @AuthenticationPrincipal UserData userData,
+                                              RedirectAttributes redirectAttributes) {
         User user = userService.findById(userData.getId());
 
         if (bindingResult.hasErrors()) {
             ModelAndView mav = new ModelAndView("profile");
             mav.addObject("user", userService.mapUserToUpdateDto(user));
-            mav.addObject("passwordChange", new  PasswordChangeRequest());
+            mav.addObject("passwordChange", new PasswordChangeRequest());
             return mav;
         }
 
@@ -137,7 +132,6 @@ public class HomeController {
 
     @GetMapping("/notifications")
     public ModelAndView testNotifications(@AuthenticationPrincipal UserData userData) {
-
         List<Notification> notifications = notificationService.getNotifications(userData.getId());
         ModelAndView modelAndView = new ModelAndView("notification-view");
         modelAndView.addObject("notifications", notifications);
@@ -146,7 +140,6 @@ public class HomeController {
 
     @DeleteMapping("/notifications/delete-all")
     public ModelAndView deleteNotifications(@AuthenticationPrincipal UserData userData) {
-
         ModelAndView modelAndView = new ModelAndView("notification-view");
         notificationService.deleteNotifications(userData.getId());
         modelAndView.addObject("notifications", notificationService.getNotifications(userData.getId()));

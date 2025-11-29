@@ -52,7 +52,6 @@ public class Policy {
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal premiumAmount;
 
-
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal coverageAmount;
 

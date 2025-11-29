@@ -49,7 +49,4 @@ public class Transaction {
 
     private String failureReason;
 
-
-
-
 }

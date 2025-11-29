@@ -14,13 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableScheduling
 public class InsuranceCompanyApplication {
 
-    public static final String LIGHT_GREEN = "\u001B[92m"; // Bright green
-    public static final String RESET = "\u001B[0m"; // Reset color
+    public static final String LIGHT_GREEN = "\u001B[92m";
+    public static final String RESET = "\u001B[0m";
 
     public static void main(String[] args) {
-
-		SpringApplication.run(InsuranceCompanyApplication.class, args);
+        SpringApplication.run(InsuranceCompanyApplication.class, args);
         System.out.println(LIGHT_GREEN + "Server Started" + RESET);
-	}
-
+    }
 }

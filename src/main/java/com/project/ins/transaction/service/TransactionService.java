@@ -28,7 +28,6 @@ public class TransactionService {
     }
 
     public void createTopTransaction(User user, BigDecimal balance) {
-
         Transaction transaction = Transaction.builder()
                 .owner(user)
                 .amount(BigDecimal.valueOf(200.00))
@@ -41,7 +40,6 @@ public class TransactionService {
                 .build();
 
         transactionRepository.save(transaction);
-
     }
 
     public List<Transaction> findAllByUserId(UUID id) {
@@ -49,13 +47,10 @@ public class TransactionService {
     }
 
     public List<Transaction> findAllByUserIdLimit(UUID id) {
-
         return transactionRepository.findAllByOwner_Id(id).stream().sorted(Comparator.comparing(Transaction::getCreatedOn).reversed()).limit(2).toList();
-
     }
 
     public Transaction createWithdrawalTransaction(User user, BigDecimal balance, BigDecimal amount) {
-
         Transaction transaction = Transaction.builder()
                 .owner(user)
                 .amount(amount)
@@ -69,11 +64,9 @@ public class TransactionService {
 
         log.info("You successfully pay your premium");
         return transactionRepository.save(transaction);
-
     }
 
     public Transaction createFailTransaction(User user, BigDecimal balance, BigDecimal amount, String failureReason) {
-
         Transaction transaction = Transaction.builder()
                 .owner(user)
                 .amount(amount)
@@ -88,11 +81,9 @@ public class TransactionService {
 
         log.info("Premium payment failed, because of {}", failureReason);
         return transactionRepository.save(transaction);
-
     }
 
     public void claimPaymentTransaction(User owner, BigDecimal amount, BigDecimal balance) {
-
         Transaction transaction = Transaction.builder()
                 .owner(owner)
                 .amount(amount)

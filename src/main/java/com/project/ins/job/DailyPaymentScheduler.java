@@ -31,14 +31,12 @@ public class DailyPaymentScheduler {
         this.claimService = claimService;
     }
 
-    @Scheduled(cron = "0 0 21 * * *")
+    @Scheduled(cron = "0 47 13 * * *")
     @Transactional
     public void dailyPayments() {
-
         List<Claim> claims = claimService.findAllApproved();
 
         for (Claim claim : claims) {
-
             Wallet wallet = claim.getOwner().getWallet();
             wallet.setBalance(wallet.getBalance().add(claim.getAmount()));
             wallet.setUpdatedOn(LocalDateTime.now());

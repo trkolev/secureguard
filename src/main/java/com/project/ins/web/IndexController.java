@@ -28,7 +28,6 @@ public class IndexController {
 
     @GetMapping("/login")
     public ModelAndView login(@RequestParam(name = "error", required = false) String errorMessage) {
-
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
         modelAndView.addObject("loginRequest", new LoginRequest());
@@ -41,7 +40,6 @@ public class IndexController {
 
     @GetMapping("/register")
     public ModelAndView register(@ModelAttribute("registerRequest") RegisterRequest registerRequest) {
-
         ModelAndView modelAndView = new ModelAndView("register");
         modelAndView.addObject("registerRequest", registerRequest);
         return modelAndView;
@@ -49,7 +47,6 @@ public class IndexController {
 
     @PostMapping("/register")
     public String register(@Valid RegisterRequest registerRequest, BindingResult bindingResult) {
-
         if (bindingResult.hasErrors()) {
             return "register";
         }
@@ -58,7 +55,6 @@ public class IndexController {
 
         return "redirect:/login";
     }
-
 
     @GetMapping("/about")
     public String about() {

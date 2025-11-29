@@ -50,7 +50,7 @@ public class IndexControllerApiTest {
     void getRequestToLogin_shouldAddErrorMessageWhenErrorParameterIsPresent() throws Exception {
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/login")
-                .param("error", "true");  
+                .param("error", "true");
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())

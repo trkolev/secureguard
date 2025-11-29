@@ -51,11 +51,10 @@ public class NotificationService {
 
     @Cacheable(value = "notifications", key = "#userId")
     public List<Notification> getNotificationsLimit(UUID userId) {
-
         ResponseEntity<List<Notification>> notifications = notificationClient.getNotifications(userId);
         List<Notification> body = notifications.getBody();
-        
-        if(body == null || body.isEmpty()){
+
+        if (body == null || body.isEmpty()) {
             return body != null ? body : List.of();
         }
         return body.stream().limit(3).toList();

@@ -21,7 +21,6 @@ public class PaymentController {
 
     @GetMapping("/payment-view")
     public ModelAndView upcomingPayment(@AuthenticationPrincipal UserData userData) {
-
         List<Claim> payments = claimService.upcomingPayments(userData.getId());
 
         ModelAndView modelAndView = new ModelAndView("payment-view");

@@ -30,11 +30,8 @@ public class PolicyService {
         this.numberGenerator = numberGenerator;
     }
 
-
     public void createPolicy(PolicyRequest policyRequest, User user) {
-
-        if(user.getWallet().getBalance().compareTo(policyRequest.getPremiumAmount()) >= 0) {
-
+        if (user.getWallet().getBalance().compareTo(policyRequest.getPremiumAmount()) >= 0) {
             Policy policy = Policy.builder()
                     .policyNumber(numberGenerator.getResponse())
                     .owner(user)
@@ -50,51 +47,41 @@ public class PolicyService {
                     .build();
 
             policyRepository.save(policy);
-        }else  {
+        } else {
             throw new PolicyException("Insufficient wallet balance");
         }
     }
 
     public List<Policy> getAllByUserId(UUID id) {
-
         return policyRepository.findAllByOwner_Id(id);
-
     }
 
-    public  List<Policy> getAllByOwnerIdLimited(UUID id) {
-
+    public List<Policy> getAllByOwnerIdLimited(UUID id) {
         List<Policy> allByOwnerId = policyRepository.findAllByOwner_Id(id);
 
         return allByOwnerId.stream().sorted(Comparator.comparing(Policy::getCreatedAt).reversed()).limit(3).toList();
     }
 
-
     public void cancelPolicy(UUID id) {
-
         Optional<Policy> policy = policyRepository.findById(id);
-        if(policy.isEmpty()) {
+        if (policy.isEmpty()) {
             throw new PolicyException("Policy not found");
         }
 
         policy.get().setStatus(PolicyStatus.CANCELLED);
         policy.get().setCancellationDate(LocalDate.now());
         policyRepository.save(policy.get());
-
     }
 
     public BigDecimal findTotalCoverage(UUID id) {
-
         return getAllByUserId(id).stream()
                 .map(Policy::getCoverageAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
     }
 
     public BigDecimal findTotalPremium(UUID id) {
-
         return getAllByUserId(id).stream()
                 .map(Policy::getPremiumAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
     }
 }

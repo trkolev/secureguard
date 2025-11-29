@@ -25,12 +25,10 @@ public class ClaimService {
     private final ClaimRepository claimRepository;
     private final NumberGenerator numberGenerator;
 
-
     public ClaimService(ClaimRepository claimRepository, NumberGenerator numberGenerator) {
         this.claimRepository = claimRepository;
         this.numberGenerator = numberGenerator;
     }
-
 
     public Claim create(ClaimRequest claimRequest, User user) {
 
@@ -59,7 +57,6 @@ public class ClaimService {
         return claimRepository.save(claim);
     }
 
-
     public List<Claim> findAllByOwnerId(UUID id) {
         List<Claim> allByOwnerId = claimRepository.findAllByOwner_Id(id);
         if (allByOwnerId.isEmpty()) {
@@ -69,37 +66,28 @@ public class ClaimService {
     }
 
     public void cancel(UUID id) {
-
         Claim claim = claimRepository.findById(id).orElseThrow(() -> new RuntimeException("Claim not found"));
         claim.setStatus(ClaimStatus.DECLINED);
         claimRepository.save(claim);
-
     }
 
     public List<Claim> findAllByOwnerIdLimit(UUID id) {
-
         List<Claim> allByOwnerId = claimRepository.findAllByOwner_Id(id);
         return allByOwnerId.stream().sorted(Comparator.comparing(Claim::getCreatedDate)).limit(3).toList();
-
     }
 
     public int findClaimsThisYear(UUID id) {
-
         List<Claim> claimList = findAllByOwnerId(id).stream().filter(claim -> claim.getCreatedDate().getYear() == LocalDateTime.now().getYear()).toList();
 
         return claimList.size();
     }
 
     public List<Claim> upcomingPayments(UUID id) {
-
         return findAllByOwnerId(id).stream().sorted(Comparator.comparing(Claim::getCreatedDate)).filter(claim -> claim.getStatus() == ClaimStatus.APPROVED).toList();
-
     }
 
     public List<Claim> upcomingPaymentsLimit(UUID id) {
-
         return findAllByOwnerId(id).stream().sorted(Comparator.comparing(Claim::getCreatedDate)).filter(claim -> claim.getStatus() == ClaimStatus.APPROVED).limit(3).toList();
-
     }
 
     public List<Claim> findAll() {
@@ -107,7 +95,6 @@ public class ClaimService {
     }
 
     public void approveClaim(UUID claimId, ClaimLiquidationRequest request) {
-
         Optional<Claim> optionalClaim = claimRepository.findById(claimId);
         if (optionalClaim.isEmpty()) {
             throw new ClaimNotFoundException();
@@ -119,11 +106,9 @@ public class ClaimService {
         claim.setUpdatedDate(LocalDateTime.now());
         claim.setAmount(request.getAmount());
         claimRepository.save(claim);
-
     }
 
     public void declineClaim(UUID id, ClaimLiquidationRequest request) {
-
         Optional<Claim> optionalClaim = claimRepository.findById(id);
         if (optionalClaim.isEmpty()) {
             throw new ClaimNotFoundException();
@@ -134,7 +119,6 @@ public class ClaimService {
         claim.setDeclineReason(request.getDeclineReason());
         claim.setUpdatedDate(LocalDateTime.now());
         claimRepository.save(claim);
-
     }
 
     public void save(Claim claim) {

@@ -1,0 +1,17 @@
+com/project/ins/Integrationtest/RegisterITest.class
+com/project/ins/web/PolicyControllerApiTest.class
+com/project/ins/notification/NotificationServiceUTest.class
+com/project/ins/web/ClaimControllerApiTest.class
+com/project/ins/InsuranceCompanyApplicationTests.class
+com/project/ins/web/TransactionControllerApiTest.class
+com/project/ins/user/UserServiceUTest.class
+com/project/ins/policy/PolicyServiceUTest.class
+com/project/ins/web/HomeControllerApiTest.class
+com/project/ins/web/WalletControllerApiTest.class
+com/project/ins/claim/ClaimServiceUTest.class
+com/project/ins/web/IndexControllerApiTest.class
+com/project/ins/web/AdminControllerApiTest.class
+com/project/ins/wallet/WalletServiceUTest.class
+com/project/ins/transaction/TransactionServiceUTest.class
+com/project/ins/web/EmployeeControllerApiTest.class
+com/project/ins/web/PaymentControllerApiTest.class

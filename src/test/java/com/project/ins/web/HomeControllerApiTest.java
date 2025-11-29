@@ -71,7 +71,6 @@ public class HomeControllerApiTest {
         when(claimService.upcomingPaymentsLimit(userId)).thenReturn(Collections.emptyList());
         when(notificationService.getNotificationsLimit(userId)).thenReturn(Collections.emptyList());
 
-
         MockHttpServletRequestBuilder httpRequest = get("/home")
                 .with(user(authentication))
                 .with(csrf());
